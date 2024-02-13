@@ -1,0 +1,241 @@
+<script>
+  // console.log('loaded')
+  // document.addEventListener('turbo:load', function() {
+  //       console.log('Turbolinks load event triggered');
+  // var multiSelectMode = false;
+  // var multiSelectPlayerMode = false;
+
+  // document.getElementById('toggleMultiSelect').addEventListener('click', function() {
+  //   console.log('clicked');
+  //   multiSelectMode = !multiSelectMode;
+  //   console.log(multiSelectMode);
+  //   var checkboxes = document.getElementsByClassName('multi-select');
+  //   var market_cards = document.getElementsByClassName('take_card_submit');
+  //   var submitButton = document.getElementById('submitMultiSelect');
+
+  //   for (var i = 0; i < checkboxes.length; i++) {
+  //     checkboxes[i].style.display = multiSelectMode ? 'inline' : 'none';
+  //   }
+
+  //   for (var i = 0; i < market_cards.length; i++) {
+  //     market_cards[i].disabled = multiSelectMode;
+  //   }
+
+  //   submitButton.style.display = multiSelectMode ? 'inline' : 'none';
+  //   submitButton.style.backgroundColor = multiSelectMode ? '#4caf50' : '';
+  // });
+
+  // document.getElementById('submitMultiSelect').addEventListener('click', function() {
+  //   var selectedCards = [];
+  //   var checkboxes = document.getElementsByClassName('multi-select');
+
+  //   for (var i = 0; i < checkboxes.length; i++) {
+  //     if (checkboxes[i].checked) {
+  //       selectedCards.push(checkboxes[i].value);
+  //     }
+  //   }
+
+  //   // Create a form and append the selected card IDs as hidden inputs
+  //   var form = document.createElement('form');
+  //   form.method = 'post';
+  //   form.action = '<%= take_multiple_cards_game_path(@game) %>';
+
+  //   selectedCards.forEach(function(cardId) {
+  //     var input = document.createElement('input');
+  //     input.type = 'hidden';
+  //     input.name = 'card_ids[]';
+  //     input.value = cardId;
+  //     form.appendChild(input);
+  //   });
+
+  //   // Append the form to the body and submit it
+  //   document.body.appendChild(form);
+  //   form.submit();
+
+  //       for (var i = 0; i < market_cards.length; i++) {
+  //     market_cards[i].disabled = multiSelectMode;
+  //   }
+
+  //   });
+
+  //   document.getElementById('togglePlayerMultiSelect').addEventListener('click', function() {
+  //     console.log('clicked');
+  //     multiSelectPlayerMode = !multiSelectPlayerMode;
+  //     var playerCheckboxes = document.getElementsByClassName('multi-card-select');
+  //     var submitButtonMarket = document.getElementById('submitCardsToMarket');
+
+  //     for (var i = 0; i < playerCheckboxes.length; i++) {
+  //       playerCheckboxes[i].style.display = multiSelectPlayerMode ? 'block' : 'none';
+  //     }
+
+  //     submitButtonMarket.style.display = multiSelectPlayerMode ? 'block' : 'none';
+  //     submitButtonMarket.style.backgroundColor = multiSelectPlayerMode ? '#4caf50' : '';
+  //   });
+
+  //   document.getElementById('submitCardsToMarket').addEventListener('click', function() {
+  //     console.log('clicked submit cards to market');
+  //     var selectedPlayerCards = [];
+  //     var playerCheckboxes = document.getElementsByClassName('multi-card-select');
+
+  //     for (var i = 0; i < playerCheckboxes.length; i++) {
+  //       if (playerCheckboxes[i].checked) {
+  //         selectedPlayerCards.push(playerCheckboxes[i].value);
+  //       }
+  //     }
+
+  //     var playerForm = document.createElement('form');
+  //     playerForm.method = 'post';
+  //     playerForm.action = '<%= multiple_cards_to_market_game_path(@game) %>';
+
+  //     selectedPlayerCards.forEach(function(playerCardId) {
+  //       var input = document.createElement('input');
+  //       input.type = 'hidden';
+  //       input.name = 'player_card_ids[]';
+  //       input.value = playerCardId;
+  //       playerForm.appendChild(input);
+  //     });
+
+  //     document.body.appendChild(playerForm);
+  //     playerForm.submit();
+  //   });
+
+  //   takeCardButtons = document.getElementsByClassName('take_card_submit');
+  //   for (var i = 0; i < takeCardButtons.length; i++) {
+  //     takeCardButtons[i].addEventListener('click', function() {
+  //       console.log('clicked take card');
+  //       console.log(multiSelectMode)
+
+  //     });
+  //   }
+  // });
+</script>
+              <turbo-frame id="flash_messages">
+                <% if local_assigns[:notice].present? %>
+                  <p class="py-2 px-3 bg-black bg-opacity-70 mb-5 text-white text-2xl font-m font-bold mt-2 rounded-lg inline-block animate-pulse" id="notice"><%= local_assigns[:notice] %></p>
+                <% end %>
+              </turbo-frame>
+<turbo-frame id="game-<%= @game.id %>">
+<h1 class="text-2xl font-bold mb-4 text-white">Current player: <%= @current_player.name %> - Score: <%= @current_player.tokens.sum(:value) %> Bonus: <%= @current_player.bonus_tokens.sum(:value)%></h1>
+
+
+
+<div data-controller="multi-select">
+<div class="border-2 border-gray-300 shadow-md rounded-md">
+<%= render partial: 'hand', locals: { hand: @current_players_hand } %>
+</div>
+<div class="flex justify-end items-center">
+  <div class="flex justify-center w-1/2">
+            <%= button_tag "Cards to Market", type: "button", id: "togglePlayerMultiSelect", class: "rounded-lg py-3 px-5 ml-6 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-white block font-medium rounded-lg my-5 mx-2 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", data: { action: "click->multi-select#togglePlayerMultiSelect"} %>
+          <%= button_tag "Submit", type: "button", id: "submitCardsToMarket", class: "rounded-lg py-3 px-5 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-white block font-medium rounded-lg my-5 mx-2 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", style: "display: none;", data: {multi_select_target: "playerSubmitButton", action: "click->multi-select#submitCardsToMarket", url: multiple_cards_to_market_game_path(@game)}  %>
+  </div>
+</div>
+
+  <div class="flex justify-between items-center flex-wrap border-2 border-gray-300 rounded-md p-2 mb-2 ">
+    <div class="flex justify-between items-center flex-wrap p-2 ">
+      <% @market[:market_cards].each do |card| %>
+        <%= form_with url: take_card_game_path(@game, card_id: card.id), method: :post, class: "inline-flex relative transform transition duration-500 ease-in-out hover:scale-105", data: { turbo_frame: "game-#{@game.id}" } do %>
+          <%= button_tag class: "take_card_submit border-2 border-gray-500 w-32 h-48 rounded-md bg-white p-2 m-1", type: "submit", disabled: false, data: {multi_select_target: "card"} do %>
+            <div class="w-full h-full relative">
+              <div class="absolute inset-0 bg-cover bg-center rounded-md" style="background-image: url(<%= asset_path "#{card.card_type}.jpg" %>);"></div>
+              <div class="relative text-center text-xl font-bold bg-white bg-opacity-40 font-serif">
+                <%= card.card_type %>
+              </div>
+            </div>
+          <% end %>
+          <%= check_box_tag 'card_ids[]', card.id, false, class: "border-1 border-gray-700 p-1 rounded-md multi-select absolute top-2 left-2", style: "display: none;", data: {multi_select_target: "checkbox"} %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <%= button_tag "Exchange", type: "button", id: "toggleMultiSelect", class: "rounded-lg py-3 px-5 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-white block font-medium rounded-lg my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", data: { action: "click->multi-select#toggleMultiSelect"} %>
+    <%= button_tag "Submit", type: "button", id: "submitMultiSelect", class: "rounded-lg py-3 px-5 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-white block font-medium rounded-lg my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", style: "display: none;", data: {multi_select_target: "submitButton", action: "click->multi-select#submitMultiSelect", url: take_multiple_cards_game_path(@game)} %>
+
+    <%= form_with url: take_all_camels_game_path(@game), method: :post, class: "inline-flex" do %>
+      <div class="animate-bounce transform transition duration-500 ease-in-out hover:scale-105">
+        <%= button_tag '', class: "border-2 border-gray-300 p-4 rounded-md text-white font-bold w-32 h-32", style: "background-image: url(#{asset_url('camel_selfie.jpg')}); background-size: cover; background-position: center;" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+    <div class="flex">
+      <div class="flex justify-between border-2 border-gray-300 py-4 pl-2 pr-0 min-h-3/4 w-full rounded-md">
+        <div>
+        <div>
+          <% @market[:diamond_tokens].each do |token| %>
+            <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "inline" do %>
+              <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-20 h-20 rounded-full shadow-md bg-white p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", type: "submit" do %>
+                <div class="w-full h-full relative">
+                  <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
+                </div>
+              <% end %>
+              <%end%>
+            <% end %>
+            <% @market[:gold_tokens].each do |token| %>
+              <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "inline" do %>
+                <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-20 h-20 rounded-full shadow-lg bg-white p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", type: "submit" do %>
+                  <div class="w-full h-full relative">
+                    <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
+                  </div>
+                <% end %>
+                <%end%>
+              <% end %>
+              <% @market[:silver_tokens].each do |token| %>
+                <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "inline" do %>
+                  <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-20 h-20 rounded-full shadow-lg bg-white p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", type: "submit" do %>
+                    <div class="w-full h-full relative">
+                      <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
+                    </div>
+                  <% end %>
+                  <%end%>
+                <% end %>
+                <% @market[:spice_tokens].each do |token| %>
+                  <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "inline" do %>
+                    <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-20 h-20 rounded-full shadow-lg bg-white p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", type: "submit" do %>
+                      <div class="w-full h-full relative">
+                        <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
+                      </div>
+                    <% end %>
+                    <%end%>
+                  <% end %>
+                  <% @market[:cloth_tokens].each do |token| %>
+                    <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "inline" do %>
+                      <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-20 h-20 rounded-full shadow-lg bg-white p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", type: "submit" do %>
+                        <div class="w-full h-full relative">
+                          <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
+                        </div>
+                      <% end %>
+                      <%end%>
+                    <% end %>
+                    <% @market[:leather_tokens].each do |token| %>
+                      <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "inline" do %>
+                        <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-20 h-20 rounded-full shadow-lg bg-white p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", type: "submit" do %>
+                          <div class="w-full h-full relative">
+                            <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
+                          </div>
+                        <% end %>
+                        <%end%>
+                    <% end %>
+                    </div>
+                    </div>
+                    </div>
+
+
+
+
+
+      <div class="border-2 border-gray-300 p-4 rounded-md">
+        <h3 class="text-lg font-bold text-white">Trade bonus</h3>
+        <div class="border-2 border-black bg-yellow-500 p-2 h-10 w-10 rounded-full flex justify-center items-center">
+          5/<%= @market[:trade_five_tokens].length %>
+        </div>
+        <div class="border-2 border-black bg-yellow-500 p-2 h-10 w-10 rounded-full flex justify-center items-center">
+          4/<%= @market[:trade_four_tokens].length %>
+        </div>
+        <div class="border-2 border-black bg-yellow-500 p-2 h-10 w-10 rounded-full flex justify-center items-center">
+          3/<%= @market[:trade_three_tokens].length %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</turbo-frame>

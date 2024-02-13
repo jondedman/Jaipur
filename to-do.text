@@ -1,0 +1,49 @@
+DONE
+cli and simple web, and css versions now work - done
+disable cards when checkboxes are toggled - done
+Make take card from market, take all camels and take goods unavailable after taking multiple cards - added if statements to
+check market length. - done
+ prevent market from being overfilled if already at 5 - done
+ position checkboxes over cards when toggled - done
+ PROBLEMS AFTER turbo
+ 1. clicking on take_all_camels appears to call take_card without sending the card id - done
+ 2. clicking on take_card when it is a camel takes all camels but does not change turn - done
+ 3. exchanging goods for tokens - does not redirect - done
+ 4. exchange button does not toggle after a change of turn - isolate conditions then fix - done
+5. messages not always displaying - think it because i need to call a rerender instead of redirect. - no - ihad to change to AJAX in the multi-select controller. Almost working - messages for cards to market are not displaying now. everything else works...i think - restarted server - done
+6. Occasionaly card has no id when it goes to take card method. - it appears methods are being called after chage turn when the id has disappeared.
+This is usually triggered by take all camels. It is any action followed by take all camels. take all camels works on first go. Updated to button_tag. - done
+7. game over is not functioning as it should - done
+8. there is still some strange caching of actions, posibly after an error. - done
+3. Fix issue where a player can take a card instead of submitting to the market and end turn - done
+1. Style index page more - done
+index fonts - done
+index spacing - done
+style instructions - done
+2. add some css animations - did some for alerts and camels. - done
+5. implement stimulus to improve UI - done
+6. implement hot wire and turbo streams to just update parts of the screen - done
+
+To do
+1. fix issue where players can cheat by reloading the page  - need to test this issue first. I think they may be able to take multiple actions - done - i think
+2. adjust camel icon to be smaller, but not too small - done - its ok
+
+3. use stimulus for picking up and putting down cards, starting a go, ending a go
+4. add alerts as clues about what the other player is doing
+5. add aimations to make the border gold and glint - check tailwind
+6. use stimuls to implement dragging of cards to locations, rather than using textboxes
+7. implement action cable and websockets for multiplayer.
+8. add music
+9. add sound fx
+10. improve flash notices
+11. render a stats page on game over
+12. think of other ways to tap into the competative element.
+13. replace green backdound with something more resembling a card table or a scroll
+
+14. add the rounds and the maharajah's token
+15. add loading and saving
+
+
+improvements to UI
+consider a count of goods tokens rather than displaying all of them - or overlapping them (which is hard and will require more googling and possibly a tutorial)
+consider displaying a current number of tokens for both players to the display to add to the feeling of competition

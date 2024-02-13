@@ -1,0 +1,12 @@
+      <%= turbo_frame_tag 'new_game' do %>
+        <%= form_for game, url: games_path, data: { turbo: false } do |f| %>
+          <%= f.fields_for :players do |player_fields| %>
+            <%= player_fields.label :name, class: "text-white font-bold rounded-md shadow-lg px-2 py-3 mx-1 bg-black bg-opacity-35 font-serif" %>
+            <%= player_fields.text_field :name, class: "bg-white bg-opacity-60 rounded-lg transform transition duration-500 ease-in-out hover:bg-white shadow-md" %>
+          <% end %>
+
+          <div class="flex justify-center">
+            <%= f.submit "Start New Game", class: "rounded-lg py-3 px-5 bg-green-500 bg-opacity-80 text-white block font-medium rounded-lg my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md" %>
+          </div>
+        <% end %>
+      <% end %>

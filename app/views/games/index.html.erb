@@ -1,0 +1,79 @@
+<div class="h-screen w-full p-4">
+  <h1 class="font-bold text-4xl text-white bg-black bg-opacity-30 p-2 w-1/4">Jaipur</h1>
+
+
+<div class="flex justify-center items-center">
+  <p class="text-white font-bold rounded-md shadow-md px-2 mx-2 bg-black bg-opacity-30 font-serif">Enter player's names</p>
+</div>
+<div class="flex justify-center mt-6">
+  <%= turbo_frame_tag 'new_game', src: new_game_path %>
+</div>
+
+  <div class="flex justify-center">
+    <div class="w-3/4 bg-black bg-opacity-40 rounded-md">
+
+      <div class="flex justify-center">
+        <button id="toggleButton", class="rounded-lg py-3 px-5 bg-blue-500 bg-opacity-80 text-white block font-medium rounded-lg my-5 transform transition duration-500 ease-in-out hover:scale-105 shadow-md w-3/4 font-serif" onclick="toggleCollapsible()">
+        Toggle Gameplay Instructions
+        </button>
+      </div>
+
+    <div id="collapsible" class="w-full bg-black bg-opacity-40 text-white font-serif mt-2 overflow-auto transition-max-height duration-700 ease-in-out" style="max-height: 0vh;">
+      <div class="flex justify-center font-bold my-4">
+        <h2>Welcome to Japuir! The digital adaptation of the two-player card game by Sebastien Pauchon.</h2>
+      </div>
+      <div class="flex justify-center font-bold my-4 ">
+        <h3>How to Play Jaipur</h3>
+      </div>
+      <div class="px-12">
+        <div class="flex justify-center">
+        <p>Jaipur is a fast-paced card game, a blend of tactics, risk and luck. On your turn, you can either take or sell cards. If you take cards, you have to choose between taking all the camels, taking one card from the market, or swapping 2-5 cards between the market and your cards. After your chosen action, play will automatically pass to the other player.</p>
+       </div>
+
+
+        <div class="flex justify-center font-bold my-2">
+        <h3>Taking Cards</h3>
+        </div>
+        <p>If you choose to take cards you can do one of the following:</p>
+        <ul>
+          <li style="list-style-type: disc">Take one single goods card, as long as it doesn't take you over seven cards in your hand by clicking on it. It will be replaced with the top card from the draw deck automatically.</li>
+          <li style="list-style-type: disc">Take the goods cards you want from the market into your hand and exchange them with goods from your hand and/or your camel herd. You many never finish with more than seven cards in your hand. Click first on "take multiple cards", click the checkboxes of the cards you'd like to take, and then click submit and the cards will be moved to your hand. Next click on "cards to market"and select the cards and/or camels that you'd ike to exchange from your hand, and then click submit. The cards/camels from your hand will populate the market. Note: you must replace the cards you take. The cards you take cannot be camels (see action below).</li>
+          <li style="list-style-type: disc">Take all the camels and add them to your herd.</li>
+        </ul>
+        <div class="flex justify-center font-bold my-2">
+        <h3>Selling Cards</h3>
+        </div>
+        <p>Choose a type of card you are going to sell by clicking on one of the goods in the market and the corresponding cards will be taken from your hand as payment. If you sold three or more goods, you will also automatically recieve a bonus token matching the size of your trade. NOTE: You are restricted to selling a minimum of two diamonds, gold or silver at a time.</p>
+        <div class="flex justify-center font-bold my-2">
+        <h3>Round End</h3>
+        </div>
+        <p>The round ends when either three goods token stacks are depleted. Or if there are no cards left in the draw pile while trying to fill the market.</p>
+        <div class="flex justify-center font-bold my-2">
+        <h3>Scoring</h3>
+        </div>
+        <p>At the end of the round, the player with the most camels in their herd receives the camel token, worth five rupees.</p>
+        <p>The richer player (with the most Rupees) gets a Seal of Excellence and wins.</p>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+  function toggleCollapsible() {
+    console.log("toggleCollapsible");
+    const collapsible = document.getElementById('collapsible');
+    if (collapsible.style.maxHeight === '50vh') {
+      collapsible.style.maxHeight = '0px';
+    } else {
+      collapsible.style.maxHeight = '50vh';
+    }
+  }
+
+    document.addEventListener("turbolinks:load", function() {
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+      console.log('Form submitted');
+      event.preventDefault(); // Remove this line if you want the form to submit
+    });
+  });
+</script>
