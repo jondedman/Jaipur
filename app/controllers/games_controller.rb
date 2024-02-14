@@ -193,6 +193,9 @@ class GamesController < ApplicationController
   def multiple_cards_to_market()
     @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
     card_ids = params[:player_card_ids]
+    camels_to_exchange = card_ids.select { |card_id| Card.find(card_id).card_type == "Camel" }
+    goods_to_exchange = card_ids.select { |card_id| Card.find(card_id).card_type != "Camel" }
+    balance = @current_players_cards.count - goods_to_exchange.count
     if card_ids.nil?
       render_game_and_message("You must choose at least one card to exchange")
       # render_game()
@@ -200,6 +203,9 @@ class GamesController < ApplicationController
     elsif card_ids.length + @game.market.cards.count > 5
       render_game_and_message("You cannot exchange more cards than there are spaces in the market")
       # render_game()
+      return
+    elsif balance > 7
+      render_game_and_message("You cannot have more than 7 cards in your hand")
       return
     end
     if @game.market.cards.count == 5
