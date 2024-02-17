@@ -6,7 +6,7 @@ pin "@hotwired/stimulus", to: "stimulus.min.js"
 pin "@hotwired/stimulus-loading", to: "stimulus-loading.js"
 pin_all_from "app/javascript/controllers", under: "controllers"
 pin "tailwindcss" # @3.4.1
-pin "#node.js" # @4.22.3
+# pin "#node.js" # @4.22.3
 pin "@alloc/quick-lru", to: "@alloc--quick-lru.js" # @5.2.0
 pin "@jridgewell/gen-mapping", to: "@jridgewell--gen-mapping.js" # @0.3.3
 pin "@jridgewell/resolve-uri", to: "@jridgewell--resolve-uri.js" # @3.1.1

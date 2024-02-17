@@ -15,6 +15,11 @@ module.exports = {
 			boxShadow: {
 				obvious: "6px 4px 10px 10px rgba(0, 0, 0, 0.4)",
 			},
+			screens: {
+				xs: "375px",
+
+				portrait: { raw: "(orientation: portrait)" },
+			},
 		},
 	},
 	plugins: [
