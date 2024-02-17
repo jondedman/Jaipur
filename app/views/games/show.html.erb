@@ -1,20 +1,20 @@
 
 
         <%= link_to root_path, data: { turbo_action: 'replace' } do %>
-          <div class="relative w-24 h-28  xs:w-24 xs:h-28 transform transition duration-500 ease-in-out hover:scale-105 shadow-md">
-            <%= image_tag("king_jon.jpeg", class: "rounded-lg block mt-4 border-2 bg-white w-full h-full ") %>
-            <p class="absolute bottom-1 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-80 p-0.5 rounded-lg text-sm w-3/4 text-center ">Home</p>
+          <div class="relative w-12 h-16 sm:w-32 sm:h-48 transform transition duration-500 ease-in-out hover:scale-105 shadow-md">
+            <%= image_tag("king_jon.jpeg", class: "rounded-lg block mt-4 border-2 bg-white w-3/4 h-3/4 sm:w-full sm:h-full ") %>
+            <p class="hidden sm:block absolute bottom-1 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-80 p-0.5 rounded-lg text-sm w-3/4 text-center">Home</p>
           </div>
         <% end %>
 
 
-          <div class="ml-10 md: w-3/4">
-            <div class="mx-auto">
+
+            <div class=" flex mx-auto w-full h-3/4 md:w-3/4">
 
 
-              <div class="w-full rounded-md p-5 m-5 relative" style="background-image: url(<%= asset_path 'table.jpg' %>); background-position: center; background-repeat: no-repeat; background-size: cover;">
+              <div class="w-full rounded-md sm:p-5 sm:m-5 relative" style="background-image: url(<%= asset_path 'table.jpg' %>); background-position: center; background-repeat: no-repeat; background-size: cover;">
                 <div class="absolute inset-0 bg-green-600 opacity-10" style="pointer-events: none;"></div>
                 <%= render partial: 'game', formats: [:html] %>
               </div>
-            </div>
+
           </div>
