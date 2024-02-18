@@ -9,12 +9,17 @@
 
 
 <div data-controller="multi-select">
-<div class="border-2 border-gray-300 shadow-md rounded-md">
+<%# <div class=" h-20 border-2 border-gray-300 shadow-md rounded-md"> %>
 <%= render partial: 'hand', locals: { hand: @current_players_hand } %>
-</div>
+<%# </div> %>
 <div class="flex justify-end items-center">
   <div class="flex justify-center w-1/2">
-            <%= button_tag "Cards to Market", type: "button", id: "togglePlayerMultiSelect", class: "rounded-lg py-3 px-5 ml-6 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-white block font-medium rounded-lg my-5 mx-2 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", data: { action: "click->multi-select#togglePlayerMultiSelect"} %>
+            <div class="relative group">
+              <%= button_tag "Cards to Market", type: "button", id: "togglePlayerMultiSelect", class: "h-10 w-10 sm:h-1/2 sm:w-full rounded-lg p-2 sm:py-2 sm:px-2 ml-6 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-sm sm:text-white font-medium rounded-lg my-5 mx-2 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700 bg-cover bg-center sm-bg-none", style: "background-image: url(#{asset_url('circle-down-regular.svg')});", data: { action: "click->multi-select#togglePlayerMultiSelect"} %>
+              <div class="absolute hidden group-hover:block bg-gray-200 text-gray-700 px-2 py-1 text-sm rounded-md top-full left-1/2 transform -translate-x-1/2 -translate-y-2">
+                Select cards from hand
+              </div>
+            </div>
           <%= button_tag "Submit", type: "button", id: "submitCardsToMarket", class: "rounded-lg py-3 px-5 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-white block font-medium rounded-lg my-5 mx-2 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", style: "display: none;", data: {multi_select_target: "playerSubmitButton", action: "click->multi-select#submitCardsToMarket", url: multiple_cards_to_market_game_path(@game)}  %>
   </div>
 </div>
