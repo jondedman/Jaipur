@@ -15,12 +15,12 @@
 <div class="flex justify-end items-center">
   <div class="flex justify-center w-1/2">
             <div class="relative group">
-              <%= button_tag "Cards to Market", type: "button", id: "togglePlayerMultiSelect", class: "h-8 w-8 sm:h-auto sm:w-auto rounded-lg p-2 sm:py-2 sm:px-2 ml-6 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-sm sm:text-white font-medium rounded-lg my-5 mx-2 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700 bg-cover bg-center sm-bg-none", style: "background-image: url(#{asset_url('circle-down-regular.svg')});", data: { action: "click->multi-select#togglePlayerMultiSelect"} %>
+              <%= button_tag "Cards to Market", type: "button", id: "togglePlayerMultiSelect", class: "h-8 w-8 sm:h-auto sm:w-auto rounded-lg p-2 sm:p-2 ml-6 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-sm sm:text-white font-medium rounded-lg my-5 mx-2 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700 bg-cover bg-center sm-bg-none", style: "background-image: url(#{asset_url('circle-down-regular.svg')});", data: { action: "click->multi-select#togglePlayerMultiSelect"} %>
               <div class="absolute hidden group-hover:block bg-gray-200 text-gray-700 px-2 py-1 text-sm rounded-md top-full left-1/2 transform -translate-x-1/2 -translate-y-2">
                 Select cards from hand
               </div>
             </div>
-          <%= button_tag "Submit", type: "button", id: "submitCardsToMarket", class: "h-8 w-8 sm:h-1/2 sm:w-auto rounded-lg py-3 px-5 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-sm sm:text-white block font-medium rounded-lg my-5 mx-2 transform transition duration-500 ease-in-out hover:scale-105 bg-contain bg-no-repeat bg-center shadow-md hover:bg-green-700 sm-bg-none", style: "display: none; background-image: url(#{asset_url('circle-check-regular.svg')});", data: {multi_select_target: "playerSubmitButton", action: "click->multi-select#submitCardsToMarket", url: multiple_cards_to_market_game_path(@game)}  %>
+          <%= button_tag "Submit", type: "button", id: "submitCardsToMarket", class: "h-8 w-8 sm:h-1/2 sm:w-auto rounded-lg p1 sm:p-2 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-sm sm:text-white block font-medium rounded-lg my-5 mx-2 transform transition duration-500 ease-in-out hover:scale-105 bg-contain bg-no-repeat bg-center shadow-md hover:bg-green-700 sm-bg-none", style: "display: none; background-image: url(#{asset_url('circle-check-regular.svg')});", data: {multi_select_target: "playerSubmitButton", action: "click->multi-select#submitCardsToMarket", url: multiple_cards_to_market_game_path(@game)}  %>
   </div>
 </div>
 
@@ -41,8 +41,8 @@
       <% end %>
     </div>
 
-    <%= button_tag "Exchange", type: "button", id: "toggleMultiSelect", class: "sm-bg-none h-8 w-8 sm:h-auto sm:w-auto rounded-lg p-2 sm:py-3 sm:px-5 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-white block font-medium rounded-lg my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", style: "background-image: url(#{asset_url('circle-up-regular.svg')});", data: { action: "click->multi-select#toggleMultiSelect"} %>
-    <%= button_tag "Submit", type: "button", id: "submitMultiSelect", class: "rounded-lg py-3 px-5 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-white block font-medium rounded-lg my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", style: "display: none;", data: {multi_select_target: "submitButton", action: "click->multi-select#submitMultiSelect", url: take_multiple_cards_game_path(@game)} %>
+    <%= button_tag "Exchange", type: "button", id: "toggleMultiSelect", class: "sm-bg-none h-8 w-8 sm:h-auto sm:w-auto rounded-lg p-1 sm:p-2 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-white block rounded-lg mx-1 my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", style: "background-image: url(#{asset_url('circle-up-regular.svg')});", data: { action: "click->multi-select#toggleMultiSelect"} %>
+    <%= button_tag "Submit", type: "button", id: "submitMultiSelect", class: "sm-bg-none rounded-lg p-1 sm:p-2 m-2  bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-sm sm:text-white block rounded-lg my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700 h-8 w-8 sm:h-1/2 sm:w-auto", style: "display: none; background-image: url(#{asset_url('circle-check-regular.svg')});", data: {multi_select_target: "submitButton", action: "click->multi-select#submitMultiSelect", url: take_multiple_cards_game_path(@game)} %>
 
     <%= form_with url: take_all_camels_game_path(@game), method: :post, class: "inline-flex" do %>
       <div class="animate-bounce transform transition duration-500 ease-in-out hover:scale-105">
