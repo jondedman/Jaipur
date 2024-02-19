@@ -41,7 +41,7 @@
       <% end %>
     </div>
 
-    <%= button_tag "Exchange", type: "button", id: "toggleMultiSelect", class: "h-8 w-8 sm:h-auto sm:w-auto rounded-lg p-2 sm:py-3 sm:px-5 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-white block font-medium rounded-lg my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", style: "background-image: url(#{asset_url('circle-up-regular.svg')});", data: { action: "click->multi-select#toggleMultiSelect"} %>
+    <%= button_tag "Exchange", type: "button", id: "toggleMultiSelect", class: "sm-bg-none h-8 w-8 sm:h-auto sm:w-auto rounded-lg p-2 sm:py-3 sm:px-5 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-white block font-medium rounded-lg my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", style: "background-image: url(#{asset_url('circle-up-regular.svg')});", data: { action: "click->multi-select#toggleMultiSelect"} %>
     <%= button_tag "Submit", type: "button", id: "submitMultiSelect", class: "rounded-lg py-3 px-5 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-white block font-medium rounded-lg my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", style: "display: none;", data: {multi_select_target: "submitButton", action: "click->multi-select#submitMultiSelect", url: take_multiple_cards_game_path(@game)} %>
 
     <%= form_with url: take_all_camels_game_path(@game), method: :post, class: "inline-flex" do %>
