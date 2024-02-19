@@ -33,7 +33,8 @@ export default class extends Controller {
 			: "none";
 	}
 
-	submitMultiSelect() {
+	submitMultiSelect(event) {
+		event.preventDefault();
 		var selectedCards = [];
 
 		this.checkboxTargets.forEach((checkbox) => {
@@ -41,6 +42,12 @@ export default class extends Controller {
 				selectedCards.push(checkbox.value);
 			}
 		});
+
+		if (selectedCards.length === 0) {
+			// Prevent form submission and show an error message
+			alert("You must choose at least one card to exchange");
+			return;
+		}
 
 		var formData = new FormData();
 
@@ -88,14 +95,21 @@ export default class extends Controller {
 			: "none";
 	}
 
-	submitCardsToMarket() {
+	submitCardsToMarket(event) {
 		console.log("submitting cards to market");
+		event.preventDefault();
 		var selectedPlayerCards = [];
 		this.playerCheckboxTargets.forEach((playerCheckbox) => {
 			if (playerCheckbox.checked) {
 				selectedPlayerCards.push(playerCheckbox.value);
 			}
 		});
+
+		if (selectedPlayerCards.length === 0) {
+			// Prevent form submission and show an error message
+			alert("You must choose at least one card to exchange");
+			return;
+		}
 
 		var formData = new FormData();
 
