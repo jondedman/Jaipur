@@ -4,7 +4,7 @@
                 <% end %>
               </turbo-frame>
 <turbo-frame id="game-<%= @game.id %>">
-<h1 class="text-sm md:text-2xl font-bold mb-4 mt-1 text-white text-center">Current player: <%= @current_player.name %> - Score: <%= @current_player.tokens.sum(:value) %> Bonus: <%= @current_player.bonus_tokens.sum(:value)%></h1>
+<h1 class="text-sm md:text-2xl font-bold mb-1 sm:mb-4 mt-1 text-white text-center">Current player: <%= @current_player.name %> - Score: <%= @current_player.tokens.sum(:value) %> Bonus: <%= @current_player.bonus_tokens.sum(:value)%></h1>
 
 
 
@@ -24,11 +24,11 @@
   </div>
 </div>
 
-  <div class="flex justify-center sm:justify-between items-center flex-wrap border-2 border-gray-300 rounded-md p-2 mb-2 ">
-    <div class="flex justify-between items-center sm:flex-wrap p-2 ">
+  <div class="flex justify-center sm:justify-between items-center border-2 border-gray-300 rounded-md sm:p-2 mb-2 ">
+    <div class="flex justify-left sm:justify-between items-center sm:flex-wrap sm:p-2 ">
       <% @market[:market_cards].each do |card| %>
         <%= form_with url: take_card_game_path(@game, card_id: card.id), method: :post, class: "inline-flex relative transform transition duration-500 ease-in-out hover:scale-105", data: { turbo_frame: "game-#{@game.id}" } do %>
-          <%= button_tag class: "take_card_submit border-2 border-gray-500 w-16 h-24 bg-white p-1 sm:p-2  sm:w-32 sm:h-48 rounded-md bg-white", type: "submit", disabled: false, data: {multi_select_target: "card"} do %>
+          <%= button_tag class: "take_card_submit border-2 border-gray-500 w-12 h-24 bg-white p-1 sm:p-2  sm:w-32 sm:h-48 rounded-md bg-white", type: "submit", disabled: false, data: {multi_select_target: "card"} do %>
             <div class="w-full h-full relative">
               <div class="absolute inset-0 bg-cover bg-center rounded-md" style="background-image: url(<%= asset_path "#{card.card_type}.jpg" %>);"></div>
               <div class="relative hidden sm:block text-center text-xl font-bold bg-white bg-opacity-40 font-serif">
@@ -43,84 +43,37 @@
 
     <%= button_tag "Exchange", type: "button", id: "toggleMultiSelect", class: "sm-bg-none h-8 w-8 sm:h-auto sm:w-auto rounded-lg p-1 sm:p-2 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-white block rounded-lg mx-1 my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700", style: "background-image: url(#{asset_url('circle-up-regular.svg')});", data: { action: "click->multi-select#toggleMultiSelect"} %>
 
-    <%= button_tag "Submit", type: "button", id: "submitMultiSelect", class: "sm-bg-none rounded-lg p-1 sm:p-2 m-2  bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-sm sm:text-white block rounded-lg my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700 h-8 w-8 sm:h-1/2 sm:w-auto", style: "display: none; background-image: url(#{asset_url('circle-check-regular.svg')});", data: {multi_select_target: "submitButton", action: "click->multi-select#submitMultiSelect", url: take_multiple_cards_game_path(@game)} %>
+    <%= button_tag "Submit", type: "button", id: "submitMultiSelect", class: "sm-bg-none rounded-lg p-1 sm:p-2 sm:m-2  bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-sm sm:text-white block rounded-lg my-10 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700 h-8 w-8 sm:h-1/2 sm:w-auto", style: "display: none; background-image: url(#{asset_url('circle-check-regular.svg')});", data: {multi_select_target: "submitButton", action: "click->multi-select#submitMultiSelect", url: take_multiple_cards_game_path(@game)} %>
 
     <%= form_with url: take_all_camels_game_path(@game), method: :post, class: "inline-flex" do %>
       <div class="animate-bounce transform transition duration-500 ease-in-out hover:scale-105">
-        <%= button_tag '', class: "border-2 border-gray-300 p-4 rounded-md text-white font-bold w-10 h-10 sm:w-32 sm:h-32", style: "background-image: url(#{asset_url('camel_selfie.jpg')}); background-size: cover; background-position: center;" %>
+        <%= button_tag '', class: "border-2 border-gray-300 p-4 rounded-md text-white font-bold w-8 h-8 sm:w-24 sm:h-24", style: "background-image: url(#{asset_url('camel_selfie.jpg')}); background-size: cover; background-position: center;" %>
       </div>
     <% end %>
   </div>
 </div>
-    <div class="flex">
-      <div class="flex justify-between border-2 border-gray-300 py-4 pl-2 pr-0 min-h-3/4 w-full rounded-md">
-        <div>
-        <div>
-          <% @market[:diamond_tokens].each_with_index do |token, index| %>
-            <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "inline" do %>
-              <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-10 h-10 sm:h-20 sm:w-20 rounded-full shadow-md bg-white sm:p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", style: "transform: translateX(#{index * -40}px);", type: "submit" do %>
+    <div class="inline-flex flex-wrap border-2 border-grey-500 w-full">
+      <% [:diamond_tokens, :gold_tokens, :silver_tokens, :spice_tokens, :cloth_tokens, :leather_tokens].each do |token_type| %>
+        <div class="relative inline-flex w-1/5 overflow-hidden pr-8">
+          <% @market[token_type].each_with_index do |token, index| %>
+            <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "relative w-1/2" do %>
+              <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-10 h-10 sm:h-20 sm:w-20 rounded-full shadow-md bg-white sm:p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", style: "transform: translateX(#{index * 8}px);", type: "submit" do %>
                 <div class="w-full h-full relative">
                   <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
                 </div>
               <% end %>
-              <%end%>
             <% end %>
-
-            <% @market[:gold_tokens].each do |token| %>
-              <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "inline" do %>
-              <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-10 h-10 sm:h-20 sm:w-20 rounded-full shadow-md bg-white sm:p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", type: "submit" do %>
-                  <div class="w-full h-full relative">
-                    <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
-                  </div>
-                <% end %>
-                <%end%>
-              <% end %>
-              <% @market[:silver_tokens].each do |token| %>
-                <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "inline" do %>
-                                <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-10 h-10 sm:h-20 sm:w-20 rounded-full shadow-md bg-white sm:p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", type: "submit" do %>
-                    <div class="w-full h-full relative">
-                      <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
-                    </div>
-                  <% end %>
-                  <%end%>
-                <% end %>
-                <% @market[:spice_tokens].each do |token| %>
-                  <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "inline" do %>
-                                  <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-10 h-10 sm:h-20 sm:w-20 rounded-full shadow-md bg-white sm:p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", type: "submit" do %>
-                      <div class="w-full h-full relative">
-                        <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
-                      </div>
-                    <% end %>
-                    <%end%>
-                  <% end %>
-                  <% @market[:cloth_tokens].each do |token| %>
-                    <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "inline" do %>
-                               <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-10 h-10 sm:h-20 sm:w-20 rounded-full shadow-md bg-white sm:p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", type: "submit" do %>
-                        <div class="w-full h-full relative">
-                          <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
-                        </div>
-                      <% end %>
-                      <%end%>
-                    <% end %>
-                    <% @market[:leather_tokens].each do |token| %>
-                      <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "inline" do %>
-                                      <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-10 h-10 sm:h-20 sm:w-20 rounded-full shadow-md bg-white sm:p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", type: "submit" do %>
-                          <div class="w-full h-full relative">
-                            <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
-                          </div>
-                        <% end %>
-                        <%end%>
-                    <% end %>
-                    </div>
-                    </div>
-                    </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
 
 
 
 
-
-      <div class="border-2 border-gray-300 p-4 rounded-md">
-        <h3 class="text-lg font-bold text-white">Trade bonus</h3>
+      <div class="border-2 border-gray-300 p-1 sm:p-4 rounded-md">
+        <h3 class=" text-sm sm-text-lg font-bold text-white">Trade bonus</h3>
+        <div class="flex sm:block">
         <div class="border-2 border-black bg-yellow-500 p-2 h-10 w-10 rounded-full flex justify-center items-center">
           5/<%= @market[:trade_five_tokens].length %>
         </div>
@@ -130,7 +83,7 @@
         <div class="border-2 border-black bg-yellow-500 p-2 h-10 w-10 rounded-full flex justify-center items-center">
           3/<%= @market[:trade_three_tokens].length %>
         </div>
-
+        </div>
       </div>
     </div>
   </div>
