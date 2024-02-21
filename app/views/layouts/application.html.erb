@@ -11,9 +11,11 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body style="background-image: url(<%= asset_path 'background.jpg' %>) " class="h-screen w-screen sm:h-screen sm:w-screen sm:flex bg-cover bg-center bg-no-repeat px-5">
+  <body style="background-image: url(<%= asset_path 'background.jpg' %>)" class="min-h-screen min-w-screen bg-cover bg-center bg-no-repeat">
     <%# <main class="container mx-auto mt-28 px-5 flex bg-cover bg-center rounded-md shadow-lg bg-white shadow-md" style="background-image: url(<%= asset_path 'background.jpg' %>
+    <div class="flex flex-wrap">
       <%= yield %>
+      </div>
     <%# </main> %>
   </body>
 </html>

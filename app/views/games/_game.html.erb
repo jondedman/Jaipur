@@ -54,10 +54,10 @@
 </div>
     <div class="inline-flex flex-wrap border-2 border-grey-500 w-full">
       <% [:diamond_tokens, :gold_tokens, :silver_tokens, :spice_tokens, :cloth_tokens, :leather_tokens].each do |token_type| %>
-        <div class="relative inline-flex w-1/5 overflow-hidden pr-8">
+        <div class="inline-flex w-1/5 pr-8">
           <% @market[token_type].each_with_index do |token, index| %>
-            <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "relative w-1/2" do %>
-              <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-10 h-10 sm:h-20 sm:w-20 rounded-full shadow-md bg-white sm:p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", style: "transform: translateX(#{index * 8}px);", type: "submit" do %>
+            <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post, class: "relative w-3/4" do %>
+              <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-10 h-10 sm:h-20 sm:w-20 rounded-full shadow-md bg-white sm:p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md", style: "transform: translateX(#{index * -30}px);", type: "submit" do %>
                 <div class="w-full h-full relative">
                   <div class="absolute inset-0 bg-cover bg-center rounded-full" style="background-image: url(<%= asset_path "#{token.token_type}.jpg" %>);"></div>
                 </div>
