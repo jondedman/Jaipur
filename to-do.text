@@ -11,7 +11,7 @@ check market length. - done
  3. exchanging goods for tokens - does not redirect - done
  4. exchange button does not toggle after a change of turn - isolate conditions then fix - done
 5. messages not always displaying - think it because i need to call a rerender instead of redirect. - no - ihad to change to AJAX in the multi-select controller. Almost working - messages for cards to market are not displaying now. everything else works...i think - restarted server - done
-6. Occasionaly card has no id when it goes to take card method. - it appears methods are being called after chage turn when the id has disappeared.
+6. Occasionaly card has no id when it goes to take card method. - it appears methods are being called after chage turn when the id has disappeared. -done
 This is usually triggered by take all camels. It is any action followed by take all camels. take all camels works on first go. Updated to button_tag. - done
 7. game over is not functioning as it should - done
 8. there is still some strange caching of actions, posibly after an error. - done
@@ -23,11 +23,12 @@ style instructions - done
 2. add some css animations - did some for alerts and camels. - done
 5. implement stimulus to improve UI - done
 6. implement hot wire and turbo streams to just update parts of the screen - done
+1. fix issue where players can cheat by reloading the page  - need to test this issue first. I think they may be able to take multiple actions - done - i think - done
+2. adjust camel icon to be smaller, but not too small - done - its ok - done
 
 To do
-1. fix issue where players can cheat by reloading the page  - need to test this issue first. I think they may be able to take multiple actions - done - i think
-2. adjust camel icon to be smaller, but not too small - done - its ok
 
+1. adjust responsiveness for other sized mobiles in portrait
 3. use stimulus for picking up and putting down cards, starting a go, ending a go
 4. add alerts as clues about what the other player is doing
 5. add aimations to make the border gold and glint - check tailwind
@@ -45,5 +46,5 @@ To do
 
 
 improvements to UI
-consider a count of goods tokens rather than displaying all of them - or overlapping them (which is hard and will require more googling and possibly a tutorial)
+consider a count of goods tokens rather than displaying all of them - or overlapping them (which is hard and will require more googling and possibly a tutorial) - was rubbish, so not overlapping - done
 consider displaying a current number of tokens for both players to the display to add to the feeling of competition
