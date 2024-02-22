@@ -28,7 +28,25 @@ style instructions - done
 
 To do
 
-1. adjust responsiveness for other sized mobiles in portrait
+1. adjust responsiveness for other sized mobiles in PORTRAIT:
+iphone xr - done
+iphone 12-pro - done
+iphone 14 pro-max - done
+pixel 7 - done
+galaxy 8+ - done
+s20 ultra done
+ipad mini - ok could change card sizes though so they appear in a line, and button aligment could be better
+ipad air - ok - could change card sizes though so they appear in a line, ditto
+ipad pro - ditto
+surface pro - ok
+galaxy fold - ok, once unfolded
+galaxy a5 - ok
+nesthub - ok
+nesthub max - ok
+
+same for LANDSCAPE
+
+
 3. use stimulus for picking up and putting down cards, starting a go, ending a go
 4. add alerts as clues about what the other player is doing
 5. add aimations to make the border gold and glint - check tailwind
