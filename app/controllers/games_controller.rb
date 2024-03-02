@@ -570,30 +570,6 @@ end
     params.require(:game).permit(players_attributes: [:name])
   end
 
-
-  # def render_game
-  #   respond_to do |format|
-  #     format.turbo_stream do
-  #       render turbo_stream: [
-  #         turbo_stream.replace("game-#{@game.id}", partial: 'games/game', locals: { game: @game }),
-  #         turbo_stream.replace("flash_messages", partial: "flash_messages")
-  #       ]
-  #     end
-  #     format.html { render :show }
-  #   end
-  # end
-
-  # def render_message(message)
-  #   flash[:notice] = "#{message}"
-
-  #   respond_to do |format|
-  #     format.turbo_stream do
-  #       render turbo_stream: turbo_stream.replace("flash_messages", partial: "flash_messages")
-  #     end
-  #     format.html { redirect_to game_path(@game) }
-  #   end
-  # end
-
   def render_game_and_message(message="#{@current_player.name}'s turn")
     respond_to do |format|
       format.turbo_stream do
