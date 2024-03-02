@@ -78,3 +78,5 @@ pin "util" # @2.0.1
 pin "util-deprecate" # @1.0.2
 pin "v8" # @2.0.1
 pin "vm" # @2.0.1
+pin "@rails/actioncable", to: "actioncable.esm.js"
+pin_all_from "app/javascript/channels", under: "channels"
