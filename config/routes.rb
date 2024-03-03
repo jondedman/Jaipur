@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   resources :games do
     post 'take_card', on: :member
     post 'take_multiple_cards', on: :member

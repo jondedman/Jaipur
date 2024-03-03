@@ -1,4 +1,6 @@
-<div>
+<div data-controller="game-updates-subscription"
+     data-game-updates-subscription-game-id-value="<%= @game.id %>"
+     data-game-updates-subscription-player-id-value="<%= @player1.id %>">
   <%= link_to root_path, data: { turbo_action: 'replace' }, style: "align-self: flex-start;" do %>
     <div class="relative w-12 h-16 sm:w-32 sm:h-48 transform transition duration-500 ease-in-out hover:scale-105 shadow-md self-start">
       <%= image_tag("king_jon.jpeg", class: "rounded-lg block mt-4 ml-4 border-2 bg-white w-3/4 h-3/4 sm:w-full sm:h-full ") %>

@@ -5,6 +5,7 @@ import consumer from "channels/consumer";
 export default class extends Controller {
 	static values = { gameId: Number, playerId: Number };
 	connect() {
+		console.log("Player ID: ", this.playerIdValue);
 		this.subscription = consumer.subscriptions.create(
 			{ channel: "GameUpdatesChannel", game_id: this.gameIdValue },
 			{
@@ -15,10 +16,8 @@ export default class extends Controller {
 	}
 
 	received(data) {
+		console.log("Received data from GameUpdatesChannel");
 		console.log(data);
-		if (data.player_id === this.playerIdValue) {
-			console.log("Player " + this.playerIdValue + " received an update");
-		}
 	}
 
 	disconnect() {

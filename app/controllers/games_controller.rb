@@ -79,11 +79,25 @@ class GamesController < ApplicationController
   end
 
   def show
+    puts "player 1: #{@game.players.first.id}"
+    puts "player 2: #{@game.players.second.id}"
     respond_to do |format|
       format.html
       format.turbo_stream
-    end
+      if cookies[:player_id].nil?
+        # This user doesn't have a player ID yet, so assign them one.
+        if @game.players.first && cookies[:player1_id].nil?
+          cookies[:player1_id] = @game.players.first.id
+          cookies[:player_id] = cookies[:player1_id]
+        elsif @game.players.second.id && cookies[:player2_id].nil?
+          cookies[:player2_id] = @game.players.second.id
+          cookies[:player_id] = cookies[:player2_id]
+        end
+      end
 
+      @player_id = cookies[:player_id]
+      puts "cookies[:player_id] #{cookies[:player_id]}"
+    end
   end
 
   def final_scoring
