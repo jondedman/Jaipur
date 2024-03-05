@@ -6,7 +6,7 @@ class GamesController < ApplicationController
   def index
     @games = Game.all
     @game = Game.new
-    2.times { @game.players.build }
+    # 2.times { @game.players.build }
     respond_to do |format|
       format.turbo_stream
       format.html
