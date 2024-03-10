@@ -1,8 +1,8 @@
 class GamesController < ApplicationController
   before_action :set_game, only: [:create_player, :join, :change_turn, :show, :take_card, :refresh_market, :take_multiple_cards, :hand_to_market, :trade_in_tokens, :calculate_bonus_tokens, :end_turn, :take_all_camels, :hand_to_discard_pile, :game_over, :multiple_cards_to_market, :high_value_trade_in, :setup_game, :players_details]
-  before_action :set_current_player, only: [:show, :join, :take_card, :change_turn, :take_multiple_cards, :multiple_cards_to_market, :take_all_camels, :trade_in_tokens, :calculate_bonus_tokens]
+  before_action :set_current_player, only: [:change_turn]
   # before_action :setup_game, only: [:show, :take_card, :hand_to_discard_pile, :end_turn, :change_turn, :trade_in_tokens, :calculate_bonus_tokens, :take_multiple_cards, :reset_trade_counter, :hand_to_market, :current_player, :take_all_camels, :game_over, :multiple_cards_to_market, :refresh_market, :high_value_trade_in]
-  before_action :players_details, only: [:join, :show, :trade_in_tokens]
+  before_action :players_details, only: [:join, :show, :trade_in_tokens, :high_value_trade_in]
 
   def index
     # @games = Game.all
@@ -81,13 +81,13 @@ class GamesController < ApplicationController
       redirect_to game_path(@game)
       flash[:notice] = "Waiting for another player"
       puts "Waiting for another player"
+      puts "assigning current player"
+      @game.update!(current_player_id: @game.players.first.id)
     elsif @game.players.count == 2
       puts "populating initial hands"
       populate_initial_hands(@game.players.first, @game.players.second)
       initialise_scores(@game.players.first, @game.players.second)
-      @game.update!(current_player_id: @game.players.first.id)
-      # @current_player = @game.players.first
-      @current_player = @game.players.find_by(user: current_user)
+      puts "Scores initialised"
       puts "current users player #{@current_users_player}"
       @current_players_cards = @current_users_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
       puts "current players cards #{@current_players_cards}"
@@ -106,11 +106,11 @@ class GamesController < ApplicationController
   end
 
   def change_turn
-    @current_player = @current_player.id == @player1.id ? @player2 : @player1
+    @current_player = @current_users_player.id == @game.players.second.id ? @game.players.first : @game.players.second
     @game.update!(current_player_id: @current_player.id)
     # @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
     # @current_players_herd = @current_player.cards.where(card_type: "Camel")
-
+ActionCable.server.broadcast("game_updates", { message: "the current player is now #{@current_player.id}" })
     refresh_market()
     name = @current_player.name
     render_game_and_message()
@@ -205,28 +205,28 @@ class GamesController < ApplicationController
   end
 
   def update_token_ids(token)
-    token.update!(player_id: @current_player.id, market_id: nil)
+    token.update!(player_id: @current_users_player.id, market_id: nil)
 
 
   end
 
   def reset_trade_counter
-    @current_player.update!(trade_counter: 0)
+    @current_users_player.update!(trade_counter: 0)
   end
 
   def calculate_bonus_tokens(total_trade_counter)
 
     if total_trade_counter == 5
       bonus = @game.market.bonus_tokens.where(bonus_token_type: "trade_five_tokens").first
-      bonus.update!(player_id: @current_player.id, market_id: nil)
+      bonus.update!(player_id: @current_users_player.id, market_id: nil)
       # reset_trade_counter()
       # change_turn()
     elsif total_trade_counter == 4
       bonus = @game.market.bonus_tokens.where(bonus_token_type: "trade_four_tokens").first
-      bonus.update!(player_id: @current_player.id, market_id: nil)
+      bonus.update!(player_id: @current_users_player.id, market_id: nil)
     elsif total_trade_counter == 3
       bonus = @game.market.bonus_tokens.where(bonus_token_type: "trade_three_tokens").first
-      bonus.update!(player_id: @current_player.id, market_id: nil)
+      bonus.update!(player_id: @current_users_player.id, market_id: nil)
     else
       return
     end
@@ -381,6 +381,7 @@ end
 
 
 def high_value_trade_in(token, matching_cards, matching_tokens = [])
+  puts "High value trade in"
   matching_market_tokens = @game.market.tokens.where(token_type: token.token_type).to_a
   if token.token_type == "Diamond" && matching_cards.count < 2 || token.token_type == "Gold" && matching_cards.count < 2 || token.token_type == "Silver" && matching_cards.count < 2
     render_game_and_message("You need at least 2 cards to trade in diamonds, gold or silver")
@@ -398,16 +399,17 @@ def high_value_trade_in(token, matching_cards, matching_tokens = [])
       card.update!(player_id: nil, discard_pile_id: @game.discard_pile.id)
       token_to_update = matching_tokens.shift
       if token_to_update
-        token_to_update.update!(player_id: @current_player.id, market_id: nil)
+        token_to_update.update!(player_id: @current_users_player.id, market_id: nil)
         @current_player.increment!(:trade_counter)
       end
     end
-    calculate_bonus_tokens(@current_player.trade_counter)
+    calculate_bonus_tokens(@current_users_player.trade_counter)
     end_turn()
   end
   end
 
 def trade_in_tokens
+  puts "Trading in tokens"
   # before action to set current player
   # before action to set players details including current players cards and current users player
   if @game.market.cards.count < 5
@@ -420,7 +422,7 @@ def trade_in_tokens
   token_type = token.token_type
   card_type = token.token_type
 
-  matching_cards = current_players_cards.where(card_type: card_type)
+  matching_cards = @current_players_cards.where(card_type: card_type)
   matching_tokens = @game.market.tokens.where(token_type: token_type).to_a
   return if matching_cards.empty?
   if token_type == "Diamond"  || token.token_type == "Gold" || token.token_type == "Silver"
@@ -616,8 +618,8 @@ end
 
   def set_current_player
     puts "Setting current player"
-    @current_player = @game.players.find_by(user: current_user)
-    # @current_player = @game.players.find { |player| player.id == @game.current_player_id}
+    # @current_player = @game.players.find_by(user: current_user)
+      @current_player = @game.players.find { |player| player.id == @game.current_player_id}
     # puts "game #{@game}"
     # puts "players #{@game.players.inspect }"
     # puts "current player #{@current_player.inspect}"
@@ -631,6 +633,10 @@ puts "Setting players details"
   @current_players_cards = @current_users_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
   puts "current players cards #{@current_players_cards}"
   @current_players_herd = @current_users_player.cards.where(card_type: "Camel")
+  @current_players_tokens = @current_users_player.tokens
+  puts "current players tokens #{@current_players_tokens}"
+  @current_players_bonus_tokens = @current_users_player.bonus_tokens
+  puts "current players bonus tokens #{@current_players_bonus_tokens}"
   @opponents_player = @game.players.where.not(user: current_user).first
 end
 
