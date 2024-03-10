@@ -56,8 +56,8 @@
   </div>
 </div>
     <div class="flex flex-wrap border-2 border-grey-500 w-full items-center justify-center">
-      <% [:diamond_tokens, :gold_tokens, :silver_tokens, :spice_tokens, :cloth_tokens, :leather_tokens].each do |token_type| %>
-        <% @game.market.tokens.each do |token| %>
+      <%# <% [:diamond_tokens, :gold_tokens, :silver_tokens, :spice_tokens, :cloth_tokens, :leather_tokens].each do |token_type| %> %>
+        <% @market_tokens.each do |token| %>
           <%= form_with url: trade_in_tokens_game_path(@game, token_id: token.id), method: :post do %>
             <%= button_tag title: "#{token.token_type}", class: "border-2 border-gray-500 w-8 h-8 sm:w-20 sm:h-20 rounded-full shadow-md bg-white sm:p-1 transform transition duration-500 ease-in-out hover:scale-105 shadow-md m-1", type: "submit" do %>
               <div class="w-full h-full relative">
@@ -66,7 +66,7 @@
             <% end %>
           <% end %>
         <% end %>
-      <% end %>
+      <%# <% end %> %>
     </div>
 
 

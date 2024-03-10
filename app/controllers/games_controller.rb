@@ -126,7 +126,9 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
+    @market_tokens = @game.market.tokens
     puts "Showing game"
+
     # This could be in a controller, model, or background job (ActiveJob or Sidekiq)
     ActionCable.server.broadcast("game_updates", { message: "Hello, world! from the show" })
     # @player_id = @current_users_player.id
