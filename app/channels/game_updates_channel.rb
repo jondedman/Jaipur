@@ -5,6 +5,7 @@ class GameUpdatesChannel < ApplicationCable::Channel
     # stream_from "game_updates #{game.id}"
     # stream_for current_user.player
     stream_from "game_updates"
+
   end
 
   def unsubscribed

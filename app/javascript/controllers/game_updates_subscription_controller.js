@@ -11,7 +11,7 @@ export default class extends Controller {
 			{ channel: "GameUpdatesChannel", game_id: gameId },
 			{
 				received(data) {
-					console.log("Received data from GameUpdatesChannel");
+					console.log(`Received data from GameUpdatesChannel ${gameId}`);
 					console.log(data.message);
 				},
 			}

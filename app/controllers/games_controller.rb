@@ -2,7 +2,7 @@ class GamesController < ApplicationController
   before_action :set_game, only: [:create_player, :join, :change_turn, :show, :take_card, :refresh_market, :take_multiple_cards, :hand_to_market, :trade_in_tokens, :calculate_bonus_tokens, :end_turn, :take_all_camels, :hand_to_discard_pile, :game_over, :multiple_cards_to_market, :high_value_trade_in, :setup_game, :players_details]
   before_action :set_current_player, only: [:show, :join, :take_card, :change_turn, :take_multiple_cards, :multiple_cards_to_market, :take_all_camels, :trade_in_tokens, :calculate_bonus_tokens]
   # before_action :setup_game, only: [:show, :take_card, :hand_to_discard_pile, :end_turn, :change_turn, :trade_in_tokens, :calculate_bonus_tokens, :take_multiple_cards, :reset_trade_counter, :hand_to_market, :current_player, :take_all_camels, :game_over, :multiple_cards_to_market, :refresh_market, :high_value_trade_in]
-  before_action :players_details, only: [:join, :show]
+  before_action :players_details, only: [:join, :show, :trade_in_tokens]
 
   def index
     # @games = Game.all
@@ -130,7 +130,7 @@ class GamesController < ApplicationController
     puts "Showing game"
 
     # This could be in a controller, model, or background job (ActiveJob or Sidekiq)
-    ActionCable.server.broadcast("game_updates", { message: "Hello, world! from the show" })
+    ActionCable.server.broadcast("game_updates", { message: "Hello, world! from the show in game #{@game.id}" })
     # @player_id = @current_users_player.id
     respond_to do |format|
       format.html
@@ -391,6 +391,7 @@ def high_value_trade_in(token, matching_cards, matching_tokens = [])
     matching_market_tokens.each do |token|
       token.update!(player_id: @current_player.id, market_id: nil)
     end
+    raise "in high value trade in"
   end_turn()
   else
     matching_cards.each do |card|
@@ -407,6 +408,8 @@ def high_value_trade_in(token, matching_cards, matching_tokens = [])
   end
 
 def trade_in_tokens
+  # before action to set current player
+  # before action to set players details including current players cards and current users player
   if @game.market.cards.count < 5
     render_game_and_message("You must take cards from your hand to fill the market")
     # render_game()
@@ -416,7 +419,7 @@ def trade_in_tokens
 
   token_type = token.token_type
   card_type = token.token_type
-  current_players_cards = @game.cards.where(player_id: @current_player.id)
+
   matching_cards = current_players_cards.where(card_type: card_type)
   matching_tokens = @game.market.tokens.where(token_type: token_type).to_a
   return if matching_cards.empty?
@@ -427,11 +430,11 @@ def trade_in_tokens
       card.update!(player_id: nil, discard_pile_id: @game.discard_pile.id)
       token_to_update = matching_tokens.shift
       if token_to_update
-        token_to_update.update!(player_id: @current_player.id, market_id: nil)
-        @current_player.increment!(:trade_counter)
+        token_to_update.update!(player_id: @current_users_player.id, market_id: nil)
+        @current_users_player.increment!(:trade_counter)
       end
     end
-    calculate_bonus_tokens(@current_player.trade_counter)
+    calculate_bonus_tokens(@current_users_player.trade_counter)
     end_turn()
   end
 end
