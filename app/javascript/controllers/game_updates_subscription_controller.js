@@ -3,21 +3,19 @@ import consumer from "channels/consumer";
 
 // Connects to data-controller="game-updates-subscription"
 export default class extends Controller {
-	static values = { gameId: Number, playerId: Number };
 	connect() {
-		console.log("Player ID: ", this.playerIdValue);
+		console.log("Connected to GameUpdatesSubscriptionController");
+		const gameId = this.data.get("gameId");
+		console.log(`Subscribing to GameUpdatesChannel for game ${gameId}`);
 		this.subscription = consumer.subscriptions.create(
-			{ channel: "GameUpdatesChannel", game_id: this.gameIdValue },
+			{ channel: "GameUpdatesChannel", game_id: gameId },
 			{
-				received: this.received.bind(this),
+				received(data) {
+					console.log("Received data from GameUpdatesChannel");
+					console.log(data.message);
+				},
 			}
 		);
-		console.log("Connected to GameUpdatesChannel");
-	}
-
-	received(data) {
-		console.log("Received data from GameUpdatesChannel");
-		console.log(data);
 	}
 
 	disconnect() {

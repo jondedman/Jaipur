@@ -157,8 +157,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
       <%# secondary nav on desktop %>
         <div class="hidden md:flex items-center space-x-1">
-          <a class="py-5 px-3" href="#">Login</a>
-          <a class="py-2 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300" href="#">Signup</a>
+          <%= link_to "Log In", new_user_session_path, class: "py-5 px-3" %>
+          <%= link_to "Sign Up", new_user_registration_path, class: "py-5 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300" %>
+          <%# <a class="py-2 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300" href="./users/sign_up">Sign Up</a> %>
         </div>
         <%# mobile button goes here %>
         <div class="md:hidden flex items-center">

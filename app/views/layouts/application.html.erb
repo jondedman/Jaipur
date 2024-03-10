@@ -18,6 +18,9 @@
        <%= render "shared/navbar" %>
     <div>
       <%= yield %>
+      <% if current_user.present? %>
+      <h2 class="bg-blue-500 text-white">Hi <%= current_user.email %></h2>
+      <% end %>
       </div>
     <%# </main> %>
   </body>

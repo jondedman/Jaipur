@@ -1,25 +1,28 @@
 class GamesController < ApplicationController
-  before_action :set_game, only: [:change_turn, :show, :take_card, :refresh_market, :take_multiple_cards, :hand_to_market, :trade_in_tokens, :calculate_bonus_tokens, :end_turn, :take_all_camels, :hand_to_discard_pile, :game_over, :multiple_cards_to_market, :high_value_trade_in, :setup_game]
-  before_action :set_current_player, only: [:set_game, :show, :take_card, :change_turn, :take_multiple_cards, :multiple_cards_to_market, :take_all_camels, :trade_in_tokens, :calculate_bonus_tokens]
-  before_action :setup_game, only: [:show, :take_card, :hand_to_discard_pile, :end_turn, :change_turn, :trade_in_tokens, :calculate_bonus_tokens, :take_multiple_cards, :reset_trade_counter, :hand_to_market, :current_player, :take_all_camels, :game_over, :multiple_cards_to_market, :refresh_market, :high_value_trade_in]
+  before_action :set_game, only: [:create_player, :join, :change_turn, :show, :take_card, :refresh_market, :take_multiple_cards, :hand_to_market, :trade_in_tokens, :calculate_bonus_tokens, :end_turn, :take_all_camels, :hand_to_discard_pile, :game_over, :multiple_cards_to_market, :high_value_trade_in, :setup_game, :players_details]
+  before_action :set_current_player, only: [:show, :join, :take_card, :change_turn, :take_multiple_cards, :multiple_cards_to_market, :take_all_camels, :trade_in_tokens, :calculate_bonus_tokens]
+  # before_action :setup_game, only: [:show, :take_card, :hand_to_discard_pile, :end_turn, :change_turn, :trade_in_tokens, :calculate_bonus_tokens, :take_multiple_cards, :reset_trade_counter, :hand_to_market, :current_player, :take_all_camels, :game_over, :multiple_cards_to_market, :refresh_market, :high_value_trade_in]
+  before_action :players_details, only: [:join, :show]
 
   def index
-    @games = Game.all
+    # @games = Game.all
+    @games = Game.order(created_at: :desc).limit(5)
     @game = Game.new
     # 2.times { @game.players.build }
     respond_to do |format|
-      format.turbo_stream
+
       format.html
     end
   end
 
   def new
     @game = Game.new
-    2.times { @game.players.build }
+    # 2.times { @game.players.build }
   end
 
   def create
-    @game = Game.new(game_params)
+    # @game = Game.new(game_params)
+    @game = Game.new
     if @game.save
       # Create a market
       market = Market.create!(game: @game)
@@ -33,37 +36,80 @@ class GamesController < ApplicationController
       puts "Tokens seeded"
       seed_bonus_tokens(@game)
       puts "Bonus tokens seeded"
-      # Populate the players' hands with their initial 5 cards
-      populate_initial_hands(@game.players.first, @game.players.second)
-      puts "Initial hands populated"
-      initialise_scores(@game.players.first, @game.players.second)
-      puts "Scores initialised"
+      # Populate the players hands with their initial 5 cards
+      # populate_initial_hands(@game.players.first, @game.players.second)
+      # puts "Initial hands populated"
+      # initialise_scores(@game.players.first, @game.players.second)
+      # puts "Scores initialised"
       # Populate the market with cards, tokens, and bonus tokens
       populate_market(@game)
       puts "Market populated"
       puts "Game setup complete"
-      @game.update!(current_player_id: @game.players.first.id)
-      new_game = Game.new
-      2.times { new_game.players.build }
-      respond_to do |format|
-        format.turbo_stream do
-          turbo_stream.replace 'new_game_form', partial: 'games/game', locals: { game: @game }
-        end
-        format.html { redirect_to game_path(@game) }
-      end
+      # @game.update!(current_player_id: @game.players.first.id)
+      # new_game = Game.new
+      # 2.times { new_game.players.build }
+      redirect_to games_path
     else
       puts "Game creation failed"
       @game = Game.new
-      2.times { @game.players.build }
+      # 2.times { @game.players.build }
       render :new
+    end
+  end
+
+  def create_player
+    puts "Creating player"
+    @game = Game.find(params[:id])
+    if @game.players.count < 2
+      @player = @game.players.create(name: current_user.email, user: current_user)
+      puts "player created: #{@player}"
+      if @player.persisted?
+        puts "player id: #{@player.id}"
+        redirect_to join_game_path(@game)
+      else
+        puts "player was not saved: #{@player.errors.full_messages}"
+        redirect_to games_path
+      end
+    else
+      flash[:alert] = "Game is full"
+      redirect_to games_path
+    end
+  end
+
+  def join
+    if @game.players.count == 1
+      redirect_to game_path(@game)
+      flash[:notice] = "Waiting for another player"
+      puts "Waiting for another player"
+    elsif @game.players.count == 2
+      puts "populating initial hands"
+      populate_initial_hands(@game.players.first, @game.players.second)
+      initialise_scores(@game.players.first, @game.players.second)
+      @game.update!(current_player_id: @game.players.first.id)
+      # @current_player = @game.players.first
+      @current_player = @game.players.find_by(user: current_user)
+      puts "current users player #{@current_users_player}"
+      @current_players_cards = @current_users_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
+      puts "current players cards #{@current_players_cards}"
+      @current_players_herd = @current_users_player.cards.where(card_type: "Camel")
+      @opponents_player = @game.players.where.not(user: current_user).first
+      puts "Game setup complete"
+      puts "Game started"
+      puts "redirecting to game"
+
+      respond_to do |format|
+    #   # format.turbo_stream do turbo_stream.replace 'new_game', partial: 'games/game', locals: { game: @game } end
+       format.html { redirect_to game_path(@game) }
+      end
+      # ActionCable.server.broadcast("game_updates#{@game.id}", { redirect: game_path(@game) })
     end
   end
 
   def change_turn
     @current_player = @current_player.id == @player1.id ? @player2 : @player1
     @game.update!(current_player_id: @current_player.id)
-    @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
-    @current_players_herd = @current_player.cards.where(card_type: "Camel")
+    # @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
+    # @current_players_herd = @current_player.cards.where(card_type: "Camel")
 
     refresh_market()
     name = @current_player.name
@@ -79,24 +125,14 @@ class GamesController < ApplicationController
   end
 
   def show
-    puts "player 1: #{@game.players.first.id}"
-    puts "player 2: #{@game.players.second.id}"
+    @game = Game.find(params[:id])
+    puts "Showing game"
+    # This could be in a controller, model, or background job (ActiveJob or Sidekiq)
+    ActionCable.server.broadcast("game_updates", { message: "Hello, world! from the show" })
+    # @player_id = @current_users_player.id
     respond_to do |format|
       format.html
-      format.turbo_stream
-      if cookies[:player_id].nil?
-        # This user doesn't have a player ID yet, so assign them one.
-        if @game.players.first && cookies[:player1_id].nil?
-          cookies[:player1_id] = @game.players.first.id
-          cookies[:player_id] = cookies[:player1_id]
-        elsif @game.players.second.id && cookies[:player2_id].nil?
-          cookies[:player2_id] = @game.players.second.id
-          cookies[:player_id] = cookies[:player2_id]
-        end
-      end
-
-      @player_id = cookies[:player_id]
-      puts "cookies[:player_id] #{cookies[:player_id]}"
+      # format.turbo_stream
     end
   end
 
@@ -252,8 +288,6 @@ class GamesController < ApplicationController
     end
   end
 
-
-
 def count_matching_cards(card_type)
   current_players_cards = @game.cards.where(player_id: @current_player.id)
   matching_cards = current_players_cards.where(card_type: card_type)
@@ -282,6 +316,7 @@ end
       update_card_ids(card)
       refresh_market()
       end_turn()
+      ActionCable.server.broadcast("game_updates", { message: "other player just took a card!" })
   end
 end
 
@@ -498,10 +533,13 @@ end
     cards = Card.where(game: game, player: nil, card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"]).sample(3)
     tokens = Token.where(game: game, player: nil).all
     bonus_tokens = BonusToken.where(game: game, player: nil).all
-    # puts "Camels: #{camels.inspect}"
-    # puts "Cards: #{cards.inspect}"
-    # puts "Tokens: #{tokens.inspect}"
-    # puts "Bonus tokens: #{bonus_tokens.inspect}"
+    # bonus_five_tokens = BonusToken.where(game: game, player: nil, bonus_token_type: "trade_five_tokens").all
+    # bonus_four_tokens = BonusToken.where(game: game, player: nil, bonus_token_type: "trade_four_tokens").all
+    # bonus_three_tokens = BonusToken.where(game: game, player: nil, bonus_token_type: "trade_three_tokens").all
+    # @bonus_five_tokens = @game.market.bonus_tokens.where(bonus_token_type: "trade_five_tokens").shuffle,
+    # @bonus_four_tokens = @game.market.bonus_tokens.where(bonus_token_type: "trade_four_tokens").shuffle,
+    # @bonus_three_tokens = @game.market.bonus_tokens.where(bonus_token_type: "trade_three_tokens").shuffle
+
 
     (camels + cards).each do |card|
       card.update!(market_id: market.id)
@@ -526,62 +564,73 @@ end
     @game = Game.find(params[:id])
   end
 
-  def setup_game
-    p "Setting up game"
-    p "@game #{@game}"
+  # def setup_game
+  #   p "Setting up game"
+  #   p "@game #{@game}"
 
-    @player1, @player2 = @game.players.order(:id)
-    p "@current_player #{@current_player}"
-    @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
-    p "@current_players_cards #{@current_players_cards}"
-    @current_players_herd = @current_player.cards.where(card_type: "Camel")
+  #   @player1, @player2 = @game.players.order(:id)
+  #   p "@current_player #{@current_player}"
+  #   @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
+  #   p "@current_players_cards #{@current_players_cards}"
+  #   @current_players_herd = @current_player.cards.where(card_type: "Camel")
 
-    @hands = {
-      @player1 => {
-        cards: @player1.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"]),
-        herd: @player1.cards.where(card_type: "Camel"),
-        tokens: @player1.tokens,
-        bonus_tokens: @player1.bonus_tokens
-      },
-      @player2 => {
-        cards: @player2.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"]),
-        herd: @player2.cards.where(card_type: "Camel"),
-        tokens: @player2.tokens,
-        bonus_tokens: @player2.bonus_tokens
-      }
-    }
+  #   @hands = {
+  #     @player1 => {
+  #       cards: @player1.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"]),
+  #       herd: @player1.cards.where(card_type: "Camel"),
+  #       tokens: @player1.tokens,
+  #       bonus_tokens: @player1.bonus_tokens
+  #     },
+  #     @player2 => {
+  #       cards: @player2.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"]),
+  #       herd: @player2.cards.where(card_type: "Camel"),
+  #       tokens: @player2.tokens,
+  #       bonus_tokens: @player2.bonus_tokens
+  #     }
+  #   }
 
-    @market = {
-      market_cards: @game.market.cards,
-      diamond_tokens: @game.market.tokens.where(token_type: "Diamond").order(value: :desc),
-      gold_tokens: @game.market.tokens.where(token_type: "Gold").order(value: :desc),
-      silver_tokens: @game.market.tokens.where(token_type: "Silver").order(value: :desc),
-      cloth_tokens: @game.market.tokens.where(token_type: "Cloth").order(value: :desc),
-      spice_tokens: @game.market.tokens.where(token_type: "Spice").order(value: :desc),
-      leather_tokens: @game.market.tokens.where(token_type: "Leather").order(value: :desc),
-      trade_five_tokens: @game.market.bonus_tokens.where(bonus_token_type: "trade_five_tokens").shuffle,
-      trade_four_tokens: @game.market.bonus_tokens.where(bonus_token_type: "trade_four_tokens").shuffle,
-      trade_three_tokens: @game.market.bonus_tokens.where(bonus_token_type: "trade_three_tokens").shuffle
-  }
+  #   @market = {
+  #     market_cards: @game.market.cards,
+  #     diamond_tokens: @game.market.tokens.where(token_type: "Diamond").order(value: :desc),
+  #     gold_tokens: @game.market.tokens.where(token_type: "Gold").order(value: :desc),
+  #     silver_tokens: @game.market.tokens.where(token_type: "Silver").order(value: :desc),
+  #     cloth_tokens: @game.market.tokens.where(token_type: "Cloth").order(value: :desc),
+  #     spice_tokens: @game.market.tokens.where(token_type: "Spice").order(value: :desc),
+  #     leather_tokens: @game.market.tokens.where(token_type: "Leather").order(value: :desc),
+  #     trade_five_tokens: @game.market.bonus_tokens.where(bonus_token_type: "trade_five_tokens").shuffle,
+  #     trade_four_tokens: @game.market.bonus_tokens.where(bonus_token_type: "trade_four_tokens").shuffle,
+  #     trade_three_tokens: @game.market.bonus_tokens.where(bonus_token_type: "trade_three_tokens").shuffle
+  # }
 
-    @scores = {
-      @player1 => @player1.score,
-      @player2 => @player2.score
-    }
-    @discard_pile = @game.discard_pile.cards
-  end
+  #   @scores = {
+  #     @player1 => @player1.score,
+  #     @player2 => @player2.score
+  #   }
+  #   @discard_pile = @game.discard_pile.cards
+  # end
 
   def set_current_player
     puts "Setting current player"
-    @current_player = @game.players.find { |player| player.id == @game.current_player_id}
-    puts "game #{@game}"
-    puts "players #{@game.players.inspect }"
-    puts "current player #{@current_player.inspect}"
-    puts "current player id: #{@game.current_player_id}"
+    @current_player = @game.players.find_by(user: current_user)
+    # @current_player = @game.players.find { |player| player.id == @game.current_player_id}
+    # puts "game #{@game}"
+    # puts "players #{@game.players.inspect }"
+    # puts "current player #{@current_player.inspect}"
+    # puts "current player id: #{@game.current_player_id}"
   end
 
+def players_details
+puts "Setting players details"
+  @current_users_player = @game.players.find_by(user: current_user)
+  puts "current users player #{@current_users_player}"
+  @current_players_cards = @current_users_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
+  puts "current players cards #{@current_players_cards}"
+  @current_players_herd = @current_users_player.cards.where(card_type: "Camel")
+  @opponents_player = @game.players.where.not(user: current_user).first
+end
+
   def game_params
-    params.require(:game).permit(players_attributes: [:name])
+    params.require(:game).permit()
   end
 
   def render_game_and_message(message="#{@current_player.name}'s turn")
