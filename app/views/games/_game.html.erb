@@ -4,12 +4,13 @@
                 <% end %>
               </turbo-frame>
 <turbo-frame id="game-<%= @game.id %>">
-<h1 class="text-sm md:text-2xl font-bold mb-1 sm:mb-4 mt-1 text-white text-center">Current player: <%= @current_users_player.name %> - Score: <%= @current_players_tokens.sum(:value) %> Bonus: <%= @current_players_bonus_tokens.sum(:value)%></h1>
+<h1 class="text-sm md:text-2xl font-bold mb-1 sm:mb-4 mt-1 text-white text-center"><%= @current_users_player.name %> - Score: <%= @current_players_tokens.sum(:value) %> Bonus: <%= @current_players_bonus_tokens.sum(:value)%></h1>
 
 
 
 <div data-controller="multi-select">
 <%# <div class=" h-20 border-2 border-gray-300 shadow-md rounded-md"> %>
+  <h2 class="text-white text-bold"><%= @current_player.name %>'s turn</h2>
 <%= @game.players.count == 2 ? render(partial: 'hand', locals: { hand: @current_players_hand }) : "Waiting for Second player" %>
 <%# </div> %>
 <div class="flex justify-end items-center">

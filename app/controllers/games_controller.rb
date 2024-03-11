@@ -1,6 +1,6 @@
 class GamesController < ApplicationController
   before_action :set_game, only: [:create_player, :join, :change_turn, :show, :take_card, :refresh_market, :take_multiple_cards, :hand_to_market, :trade_in_tokens, :calculate_bonus_tokens, :end_turn, :take_all_camels, :hand_to_discard_pile, :game_over, :multiple_cards_to_market, :high_value_trade_in, :setup_game, :players_details]
-  before_action :set_current_player, only: [:change_turn]
+  before_action :set_current_player, only: [:change_turn, :show]
   # before_action :setup_game, only: [:show, :take_card, :hand_to_discard_pile, :end_turn, :change_turn, :trade_in_tokens, :calculate_bonus_tokens, :take_multiple_cards, :reset_trade_counter, :hand_to_market, :current_player, :take_all_camels, :game_over, :multiple_cards_to_market, :refresh_market, :high_value_trade_in]
   before_action :players_details, only: [:join, :show, :trade_in_tokens, :high_value_trade_in]
 
@@ -401,16 +401,18 @@ def high_value_trade_in(token, matching_cards, matching_tokens = [])
       card.update!(player_id: nil, discard_pile_id: @game.discard_pile.id)
       token_to_update = matching_tokens.shift
       if token_to_update
-        token_to_update.update!(player_id: @current_users_player.id, market_id: nil)
+        token_to_update.update!(player_id: @current_player.id, market_id: nil)
         @current_player.increment!(:trade_counter)
       end
     end
-    calculate_bonus_tokens(@current_users_player.trade_counter)
+    calculate_bonus_tokens(@current_player.trade_counter)
     end_turn()
   end
   end
 
 def trade_in_tokens
+  puts "current player #{@current_player}"
+  puts "current users player #{@current_users_player}"
   puts "Trading in tokens"
   # before action to set current player
   # before action to set players details including current players cards and current users player
@@ -434,8 +436,8 @@ def trade_in_tokens
       card.update!(player_id: nil, discard_pile_id: @game.discard_pile.id)
       token_to_update = matching_tokens.shift
       if token_to_update
-        token_to_update.update!(player_id: @current_users_player.id, market_id: nil)
-        @current_users_player.increment!(:trade_counter)
+        token_to_update.update!(player_id: @current_player.id, market_id: nil)
+        @current_player.increment!(:trade_counter)
       end
     end
     calculate_bonus_tokens(@current_users_player.trade_counter)
