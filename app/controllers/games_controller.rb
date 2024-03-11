@@ -101,7 +101,9 @@ class GamesController < ApplicationController
     #   # format.turbo_stream do turbo_stream.replace 'new_game', partial: 'games/game', locals: { game: @game } end
        format.html { redirect_to game_path(@game) }
       end
-      # ActionCable.server.broadcast("game_updates#{@game.id}", { redirect: game_path(@game) })
+      puts "refreshing show page for other player"
+
+      ActionCable.server.broadcast("game_updates #{@game.id}", { redirect: game_path(@game) })
     end
   end
 
@@ -110,7 +112,7 @@ class GamesController < ApplicationController
     @game.update!(current_player_id: @current_player.id)
     # @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
     # @current_players_herd = @current_player.cards.where(card_type: "Camel")
-ActionCable.server.broadcast("game_updates", { message: "the current player is now #{@current_player.id}" })
+ActionCable.server.broadcast("game_updates #{@game.id}", { message: "the current player is now #{@current_player.id}" })
     refresh_market()
     name = @current_player.name
     render_game_and_message()
@@ -130,7 +132,7 @@ ActionCable.server.broadcast("game_updates", { message: "the current player is n
     puts "Showing game"
 
     # This could be in a controller, model, or background job (ActiveJob or Sidekiq)
-    ActionCable.server.broadcast("game_updates", { message: "Hello, world! from the show in game #{@game.id}" })
+    ActionCable.server.broadcast("game_updates #{@game.id}", { message: "Hello, world! from the show in game #{@game.id}" })
     # @player_id = @current_users_player.id
     respond_to do |format|
       format.html
@@ -318,7 +320,7 @@ end
       update_card_ids(card)
       refresh_market()
       end_turn()
-      ActionCable.server.broadcast("game_updates", { message: "other player just took a card!" })
+      ActionCable.server.broadcast("game_updates #{@game.id}", { message: "other player just took a card!" })
   end
 end
 

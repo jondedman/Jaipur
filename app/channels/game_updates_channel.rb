@@ -1,10 +1,10 @@
 class GameUpdatesChannel < ApplicationCable::Channel
   def subscribed
-    # game = Game.find(params[:game_id])
-    # puts "subscribing to game_updates for game #{game.id}"
-    # stream_from "game_updates #{game.id}"
+    game = Game.find(params[:game_id])
+    puts "subscribing to game_updates for game #{game.id}"
+    stream_from "game_updates #{game.id}"
     # stream_for current_user.player
-    stream_from "game_updates"
+    # stream_from "game_updates"
 
   end
 

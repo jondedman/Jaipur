@@ -13,6 +13,11 @@ export default class extends Controller {
 				received(data) {
 					console.log(`Received data from GameUpdatesChannel ${gameId}`);
 					console.log(data.message);
+					console.log(data);
+					if (data.redirect) {
+						console.log(`Redirecting to ${data.redirect}`);
+						window.location.href = data.redirect;
+					}
 				},
 			}
 		);

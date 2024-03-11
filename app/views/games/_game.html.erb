@@ -10,7 +10,7 @@
 
 <div data-controller="multi-select">
 <%# <div class=" h-20 border-2 border-gray-300 shadow-md rounded-md"> %>
-<%= render partial: 'hand', locals: { hand: @current_players_hand } %>
+<%= @game.players.count == 2 ? render(partial: 'hand', locals: { hand: @current_players_hand }) : "Waiting for Second player" %>
 <%# </div> %>
 <div class="flex justify-end items-center">
   <div class="flex justify-center w-1/2">
