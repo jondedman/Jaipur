@@ -2,7 +2,7 @@ class GamesController < ApplicationController
   before_action :set_game, only: [:create_player, :join, :change_turn, :show, :take_card, :refresh_market, :take_multiple_cards, :hand_to_market, :trade_in_tokens, :calculate_bonus_tokens, :end_turn, :take_all_camels, :hand_to_discard_pile, :game_over, :multiple_cards_to_market, :high_value_trade_in, :setup_game, :players_details]
   before_action :set_current_player, only: [:change_turn, :show, :trade_in_tokens]
   # before_action :setup_game, only: [:show, :take_card, :hand_to_discard_pile, :end_turn, :change_turn, :trade_in_tokens, :calculate_bonus_tokens, :take_multiple_cards, :reset_trade_counter, :hand_to_market, :current_player, :take_all_camels, :game_over, :multiple_cards_to_market, :refresh_market, :high_value_trade_in]
-  before_action :players_details, only: [:join, :show, :trade_in_tokens, :high_value_trade_in]
+  before_action :players_details, only: [:join, :show, :trade_in_tokens, :high_value_trade_in, :take_card, :take_all_camels, :update_card_ids]
 
   def index
     # @games = Game.all
@@ -108,6 +108,7 @@ class GamesController < ApplicationController
   end
 
   def change_turn
+    puts "Changing turn"
     @current_player = @current_users_player.id == @game.players.second.id ? @game.players.first : @game.players.second
     @game.update!(current_player_id: @current_player.id)
     # @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
@@ -127,6 +128,7 @@ class GamesController < ApplicationController
     #   end
     #   format.html { render :show }
     # end
+    puts "Turn changed"
   end
 
   def show
@@ -202,9 +204,9 @@ class GamesController < ApplicationController
 
   def update_card_ids(card)
     puts "Updating card ids"
-    puts @current_player.inspect
+# puts @current_users_player.inspect
     puts card.inspect
-    card.update!(market_id: nil, player_id: @current_player.id)
+    card.update!(market_id: nil, player_id: @current_users_player.id)
     puts card.inspect
     puts "Card ids updated"
   end
@@ -308,7 +310,7 @@ def count_matching_cards(card_type)
 end
 
   def take_card
-    @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
+    # @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
     card = Card.find(params[:card_id])
     if @current_players_cards.count >= 7
       render_game_and_message("You have 7 cards, you can buy some goods, or exchange some cards or take all camels")
@@ -366,7 +368,7 @@ end
 def take_all_camels
   puts "Taking all camels"
 
-  puts @current_player.inspect
+  # puts @current_player.inspect
   if @game.market.cards.count < 5
     render_game_and_message("You cannot take camels.You must take cards from your hand to fill the market")
     # render_game()
