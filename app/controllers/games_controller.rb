@@ -1,6 +1,6 @@
 class GamesController < ApplicationController
   before_action :set_game, only: [:create_player, :join, :change_turn, :show, :take_card, :refresh_market, :take_multiple_cards, :hand_to_market, :trade_in_tokens, :calculate_bonus_tokens, :end_turn, :take_all_camels, :hand_to_discard_pile, :game_over, :multiple_cards_to_market, :high_value_trade_in, :setup_game, :players_details]
-  before_action :set_current_player, only: [:change_turn, :show]
+  before_action :set_current_player, only: [:change_turn, :show, :trade_in_tokens]
   # before_action :setup_game, only: [:show, :take_card, :hand_to_discard_pile, :end_turn, :change_turn, :trade_in_tokens, :calculate_bonus_tokens, :take_multiple_cards, :reset_trade_counter, :hand_to_market, :current_player, :take_all_camels, :game_over, :multiple_cards_to_market, :refresh_market, :high_value_trade_in]
   before_action :players_details, only: [:join, :show, :trade_in_tokens, :high_value_trade_in]
 
@@ -112,9 +112,12 @@ class GamesController < ApplicationController
     @game.update!(current_player_id: @current_player.id)
     # @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
     # @current_players_herd = @current_player.cards.where(card_type: "Camel")
-ActionCable.server.broadcast("game_updates #{@game.id}", { message: "the current player is now #{@current_player.id}" })
+    # The work around below is to reload both browsers - later we will use Turbo Streams to update the game for both players by using the broadcast method:
+
     refresh_market()
     name = @current_player.name
+    ActionCable.server.broadcast("game_updates #{@game.id}", { redirect: game_path(@game) })
+
     render_game_and_message()
     # respond_to do |format|
     #   format.turbo_stream do
@@ -130,7 +133,7 @@ ActionCable.server.broadcast("game_updates #{@game.id}", { message: "the current
     @game = Game.find(params[:id])
     @market_tokens = @game.market.tokens
     puts "Showing game"
-
+    ActionCable.server.broadcast("game_updates #{@game.id}", { message: "the current player is now #{@current_player.id}" })
     # This could be in a controller, model, or background job (ActiveJob or Sidekiq)
     ActionCable.server.broadcast("game_updates #{@game.id}", { message: "Hello, world! from the show in game #{@game.id}" })
     # @player_id = @current_users_player.id
@@ -207,7 +210,7 @@ ActionCable.server.broadcast("game_updates #{@game.id}", { message: "the current
   end
 
   def update_token_ids(token)
-    token.update!(player_id: @current_users_player.id, market_id: nil)
+    token.update!(player_id: @current_player.id, market_id: nil)
 
 
   end
@@ -413,6 +416,7 @@ def high_value_trade_in(token, matching_cards, matching_tokens = [])
 def trade_in_tokens
   puts "current player #{@current_player}"
   puts "current users player #{@current_users_player}"
+  puts "@market.tokens #{@game.market.tokens}"
   puts "Trading in tokens"
   # before action to set current player
   # before action to set players details including current players cards and current users player
@@ -649,6 +653,7 @@ end
   end
 
   def render_game_and_message(message="#{@current_player.name}'s turn")
+    puts "Rendering game and message"
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -659,4 +664,23 @@ end
       format.html { render :show }
     end
   end
+# end
+
+
+
+# def render_game_and_message(message="#{@current_player.name}'s turn")
+#   puts "Rendering game and message"
+#   respond_to do |format|
+#     format.turbo_stream do
+#       turbo_stream_flash = turbo_stream.update("flash_messages", partial: "flash_messages", locals: { notice: message })
+#       turbo_stream_game = turbo_stream.replace("game-#{@game.id}", partial: 'games/game', locals: { game: @game })
+
+#       ActionCable.server.broadcast("GameUpdatesChannel #{@game.id}", render_to_string(turbo_stream: turbo_stream_flash))
+#       ActionCable.server.broadcast("GameUpdatesChannel #{@game.id}", render_to_string(turbo_stream: turbo_stream_game))
+
+#       render turbo_stream: [turbo_stream_flash, turbo_stream_game], status: :ok
+#     end
+#     format.html { render :show }
+#   end
+# end
 end

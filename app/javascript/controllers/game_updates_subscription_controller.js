@@ -1,7 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 import consumer from "channels/consumer";
 
-// Connects to data-controller="game-updates-subscription"
 export default class extends Controller {
 	connect() {
 		console.log("Connected to GameUpdatesSubscriptionController");
@@ -12,11 +11,15 @@ export default class extends Controller {
 			{
 				received(data) {
 					console.log(`Received data from GameUpdatesChannel ${gameId}`);
-					console.log(data.message);
-					console.log(data);
+
 					if (data.redirect) {
 						console.log(`Redirecting to ${data.redirect}`);
 						window.location.href = data.redirect;
+					} else {
+						// Clear Turbo Streams cache and force re-fetch
+						Turbo.cache.clear();
+						// Turbo.visit(window.location, { action: "replace" });
+						Turbo.renderStreamMessage(data);
 					}
 				},
 			}
