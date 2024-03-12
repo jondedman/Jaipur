@@ -1,8 +1,8 @@
 class GamesController < ApplicationController
   before_action :set_game, only: [:create_player, :join, :change_turn, :show, :take_card, :refresh_market, :take_multiple_cards, :hand_to_market, :trade_in_tokens, :calculate_bonus_tokens, :end_turn, :take_all_camels, :hand_to_discard_pile, :game_over, :multiple_cards_to_market, :high_value_trade_in, :setup_game, :players_details]
-  before_action :set_current_player, only: [:change_turn, :show, :trade_in_tokens]
+  before_action :set_current_player, only: [:change_turn, :show, :trade_in_tokens, :multiple_cards_to_market, :take_multiple_cards, :take_card, :take_all_camels, :calculate_bonus_tokens, :update_card_ids]
   # before_action :setup_game, only: [:show, :take_card, :hand_to_discard_pile, :end_turn, :change_turn, :trade_in_tokens, :calculate_bonus_tokens, :take_multiple_cards, :reset_trade_counter, :hand_to_market, :current_player, :take_all_camels, :game_over, :multiple_cards_to_market, :refresh_market, :high_value_trade_in]
-  before_action :players_details, only: [:join, :show, :trade_in_tokens, :high_value_trade_in, :take_card, :take_all_camels, :update_card_ids]
+  before_action :players_details, only: [:join, :show, :trade_in_tokens, :high_value_trade_in, :take_card, :take_all_camels, :update_card_ids, :multiple_cards_to_market, :take_multiple_cards, :calculate_bonus_tokens]
 
   def index
     # @games = Game.all
@@ -250,7 +250,7 @@ class GamesController < ApplicationController
   end
 
   def multiple_cards_to_market()
-    @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
+    # @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
     card_ids = params[:player_card_ids]
     camels_to_exchange = card_ids.select { |card_id| Card.find(card_id).card_type == "Camel" }
     goods_to_exchange = card_ids.select { |card_id| Card.find(card_id).card_type != "Camel" }
@@ -341,7 +341,7 @@ def camel_check(card_ids)
 end
 
   def take_multiple_cards
-    @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
+    # @current_players_cards = @current_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
     # needs renaming to current player card ids
       # player1_card_ids = params[:player1_card_ids]
       card_ids = params[:card_ids]
