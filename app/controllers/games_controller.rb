@@ -222,6 +222,9 @@ class GamesController < ApplicationController
   end
 
   def calculate_bonus_tokens(total_trade_counter)
+    puts "Calculating bonus tokens again"
+    puts "Total trade counter: #{total_trade_counter}"
+    puts "Current player trade counter: #{@current_users_player.name}"
 
     if total_trade_counter == 5
       bonus = @game.market.bonus_tokens.where(bonus_token_type: "trade_five_tokens").first
@@ -443,7 +446,7 @@ def trade_in_tokens
       token_to_update = matching_tokens.shift
       if token_to_update
         token_to_update.update!(player_id: @current_player.id, market_id: nil)
-        @current_player.increment!(:trade_counter)
+        @current_users_player.increment!(:trade_counter)
       end
     end
     calculate_bonus_tokens(@current_users_player.trade_counter)
