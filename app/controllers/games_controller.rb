@@ -140,9 +140,13 @@ class GamesController < ApplicationController
     # This could be in a controller, model, or background job (ActiveJob or Sidekiq)
     ActionCable.server.broadcast("game_updates #{@game.id}", { message: "Hello, world! from the show in game #{@game.id}" })
     # @player_id = @current_users_player.id
+    flash[:game_notice] = 'Your custom message'
+
     respond_to do |format|
       format.html
-      # format.turbo_stream
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update('game_updates', partial: 'game_updates', locals: { game_notice: flash[:game_notice] })
+      end
     end
   end
 
