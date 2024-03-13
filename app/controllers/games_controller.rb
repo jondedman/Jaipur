@@ -1,8 +1,9 @@
 class GamesController < ApplicationController
   before_action :set_game, only: [:create_player, :join, :change_turn, :show, :take_card, :refresh_market, :take_multiple_cards, :hand_to_market, :trade_in_tokens, :calculate_bonus_tokens, :end_turn, :take_all_camels, :hand_to_discard_pile, :game_over, :multiple_cards_to_market, :high_value_trade_in, :setup_game, :players_details]
-  before_action :set_current_player, only: [:change_turn, :show, :trade_in_tokens, :multiple_cards_to_market, :take_multiple_cards, :take_card, :take_all_camels, :calculate_bonus_tokens, :update_card_ids]
+  before_action :set_current_player, only: [:change_turn, :show, :trade_in_tokens, :multiple_cards_to_market, :take_multiple_cards, :take_card, :take_all_camels, :calculate_bonus_tokens, :update_card_ids, :turn_check]
   # before_action :setup_game, only: [:show, :take_card, :hand_to_discard_pile, :end_turn, :change_turn, :trade_in_tokens, :calculate_bonus_tokens, :take_multiple_cards, :reset_trade_counter, :hand_to_market, :current_player, :take_all_camels, :game_over, :multiple_cards_to_market, :refresh_market, :high_value_trade_in]
-  before_action :players_details, only: [:join, :show, :trade_in_tokens, :high_value_trade_in, :take_card, :take_all_camels, :update_card_ids, :multiple_cards_to_market, :take_multiple_cards, :calculate_bonus_tokens]
+  before_action :players_details, only: [:join, :show, :trade_in_tokens, :high_value_trade_in, :take_card, :take_all_camels, :update_card_ids, :multiple_cards_to_market, :take_multiple_cards, :calculate_bonus_tokens, :turn_check]
+  before_action :turn_check, only: [:take_card, :take_all_camels, :take_multiple_cards, :trade_in_tokens, :hand_to_market, :multiple_cards_to_market]
 
   def index
     # @games = Game.all
@@ -688,4 +689,11 @@ end
 #     format.html { render :show }
 #   end
 # end
+
+def turn_check
+  if @current_player.id != @current_users_player.id
+    render_game_and_message("It's not your turn")
+    return
+  end
+end
 end
