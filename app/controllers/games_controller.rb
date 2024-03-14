@@ -17,11 +17,13 @@ class GamesController < ApplicationController
   end
 
   def new
+    puts "Creating new game"
     @game = Game.new
     # 2.times { @game.players.build }
   end
 
   def create
+    puts "in create method"
     # @game = Game.new(game_params)
     @game = Game.new
     if @game.save
@@ -37,23 +39,25 @@ class GamesController < ApplicationController
       puts "Tokens seeded"
       seed_bonus_tokens(@game)
       puts "Bonus tokens seeded"
-      # Populate the players hands with their initial 5 cards
-      # populate_initial_hands(@game.players.first, @game.players.second)
-      # puts "Initial hands populated"
-      # initialise_scores(@game.players.first, @game.players.second)
-      # puts "Scores initialised"
       # Populate the market with cards, tokens, and bonus tokens
       populate_market(@game)
       puts "Market populated"
+      puts "creating players"
+      2.times { @game.players.create }
+      puts "players created"
+      # Populate the players hands with their initial 5 cards
+      populate_initial_hands(@game.players.first, @game.players.second)
+      puts "Initial hands populated"
+      initialise_scores(@game.players.first, @game.players.second)
+      puts "Scores initialised"
+      puts "assigning current player"
+      @game.update!(current_player_id: @game.players.first.id)
+      puts "current player assigned"
       puts "Game setup complete"
-      # @game.update!(current_player_id: @game.players.first.id)
-      # new_game = Game.new
-      # 2.times { new_game.players.build }
       redirect_to games_path
     else
       puts "Game creation failed"
       @game = Game.new
-      # 2.times { @game.players.build }
       render :new
     end
   end
@@ -98,10 +102,8 @@ class GamesController < ApplicationController
       puts "Game started"
       puts "redirecting to game"
 
-      respond_to do |format|
-    #   # format.turbo_stream do turbo_stream.replace 'new_game', partial: 'games/game', locals: { game: @game } end
-       format.html { redirect_to game_path(@game) }
-      end
+      redirect_to game_path(@game)
+
       puts "refreshing show page for other player"
 
       ActionCable.server.broadcast("game_updates #{@game.id}", { redirect: game_path(@game) })

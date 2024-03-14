@@ -3,5 +3,5 @@ class Player < ApplicationRecord
   has_many :bonus_tokens
   has_many :tokens
   belongs_to :game
-  belongs_to :user
+  belongs_to :user, optional: true
 end
