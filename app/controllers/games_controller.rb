@@ -68,6 +68,8 @@ class GamesController < ApplicationController
     if player
       player.update!(user: current_user, name: current_user.email)
       redirect_to game_path(@game)
+      # general_game_message("player #{player.name} has joined the #{@game.id}. Refresh your browser or join the game to start playing")
+
     else
       flash[:alert] = "Game is full"
       redirect_to games_path
