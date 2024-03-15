@@ -150,11 +150,19 @@ class GamesController < ApplicationController
     @game = Game.find(params[:id])
     @market_tokens = @game.market.tokens
     puts "Showing game"
-    ActionCable.server.broadcast("game_updates #{@game.id}", { message: "the current player is now #{@current_player.id}" })
+    # ActionCable.server.broadcast("game_updates #{@game.id}", { message: "the current player is now #{@current_player.id}" })
     # This could be in a controller, model, or background job (ActiveJob or Sidekiq)
-    ActionCable.server.broadcast("game_updates #{@game.id}", { message: "Hello, world! from the show in game #{@game.id}" })
+    # ActionCable.server.broadcast("game_updates #{@game.id}", { message: "Hello, world! from the show in game #{@game.id}" })
     # @player_id = @current_users_player.id
+    if game_over()
+      final_scoring()
+      # ActionCable.server.broadcast("game_updates #{@game.id}", { redirect: game_path(@game) })
+    end_turn()
+    else
     general_game_message("#{@current_player.name}'s turn")
+    #  render_game_and_message()
+    end
+
   end
 
   def final_scoring
@@ -181,14 +189,20 @@ class GamesController < ApplicationController
     else
     winner = player1_total > player2_total ? @player1.name : @player2.name
     end
-    render_game_and_message("Game over! #{@player1.name} scored #{player1_total} points. #{@player2.name} scored #{player2_total} points. #{winner} wins!")
-    return
+    # render_game_and_message("Game over! #{@player1.name} scored #{player1_total} points. #{@player2.name} scored #{player2_total} points. #{winner} wins!")
+    general_game_message("Game over! #{@player1.name} scored #{player1_total} points. #{@player2.name} scored #{player2_total} points. #{winner} wins!")
+    # ActionCable.server.broadcast("game_updates #{@game.id}", { redirect: game_path(@game) })
+  #  ActionCable.server.broadcast("game_updates", { message: "Game over! #{winner} wins!" })
+
+    # return
   end
 
   def game_over
+    puts "Checking if game is over"
     @player1, @player2 = @game.players.order(:id)
     cards_left = @game.cards.where(player_id: nil, market_id: nil, discard_pile_id: nil)
-    condition1 = cards_left.count == 0
+    puts "Cards left: #{cards_left.count}"
+    condition1 = cards_left.count < 5
 
     goods_count = @game.market.tokens.where(token_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"]).group(:token_type).count.values
     empty_tokens = goods_count.select { |token| token > 0 }
@@ -196,6 +210,7 @@ class GamesController < ApplicationController
 
     if condition1 || condition2
       final_scoring()
+      puts "Game over"
       return true
     else
       return false
@@ -340,7 +355,8 @@ end
       update_card_ids(card)
       refresh_market()
       end_turn()
-      ActionCable.server.broadcast("game_updates #{@game.id}", { message: "other player just took a card!" })
+      # ActionCable.server.broadcast("game_updates #{@game.id}", { message: "other player just took a card!" })
+      # general_game_message("You took a card")
   end
 end
 
@@ -478,16 +494,23 @@ def end_turn
     return
   else
     reset_trade_counter()
-    return if game_over()
+    puts "checking if game is over"
+    if game_over()
+      puts "Game over"
+      return
+    else
+    puts "Game not over"
     refresh_market()
     change_turn()
     puts "Turn ended"
+    end
   end
 
 
 end
 
 def general_game_message(message)
+  puts "General game message"
   flash[:game_notice] = message
 
   respond_to do |format|
@@ -496,6 +519,8 @@ def general_game_message(message)
       render turbo_stream: turbo_stream.update('game_updates', partial: 'game_updates', locals: { game_notice: flash[:game_notice] })
     end
   end
+  # ActionCable.server.broadcast("game_updates #{@game}", { message: message })
+  GameUpdatesChannel.broadcast_to(@game, { message: message })
 end
   private
 
