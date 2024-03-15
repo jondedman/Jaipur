@@ -118,7 +118,8 @@ class GamesController < ApplicationController
 
       puts "refreshing show page for other player"
 
-      ActionCable.server.broadcast("game_updates #{@game.id}", { redirect: game_path(@game) })
+      # ActionCable.server.broadcast("game_updates #{@game.id}", { redirect: game_path(@game) })
+      GameUpdatesChannel.broadcast_to(@game, { redirect: game_path(@game) })
     end
   end
 
@@ -132,8 +133,8 @@ class GamesController < ApplicationController
 
     refresh_market()
     name = @current_player.name
-    ActionCable.server.broadcast("game_updates #{@game.id}", { redirect: game_path(@game) })
-
+    # ActionCable.server.broadcast("game_updates #{@game.id}", { redirect: game_path(@game) })
+    GameUpdatesChannel.broadcast_to(@game, { redirect: game_path(@game) })
     render_game_and_message()
     # respond_to do |format|
     #   format.turbo_stream do
