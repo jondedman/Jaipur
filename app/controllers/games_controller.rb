@@ -74,55 +74,6 @@ class GamesController < ApplicationController
     end
   end
 
-  def create_player
-    puts "Creating player"
-    @game = Game.find(params[:id])
-    if @game.players.count < 2
-      @player = @game.players.create(name: current_user.email, user: current_user)
-      puts "player created: #{@player}"
-      if @player.persisted?
-        puts "player id: #{@player.id}"
-        redirect_to join_game_path(@game)
-      else
-        puts "player was not saved: #{@player.errors.full_messages}"
-        redirect_to games_path
-      end
-    else
-      flash[:alert] = "Game is full"
-      redirect_to games_path
-    end
-  end
-
-  def join
-    if @game.players.count == 1
-      redirect_to game_path(@game)
-      flash[:notice] = "Waiting for another player"
-      puts "Waiting for another player"
-      puts "assigning current player"
-      @game.update!(current_player_id: @game.players.first.id)
-    elsif @game.players.count == 2
-      puts "populating initial hands"
-      populate_initial_hands(@game.players.first, @game.players.second)
-      initialise_scores(@game.players.first, @game.players.second)
-      puts "Scores initialised"
-      puts "current users player #{@current_users_player}"
-      @current_players_cards = @current_users_player.cards.where(card_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"])
-      puts "current players cards #{@current_players_cards}"
-      @current_players_herd = @current_users_player.cards.where(card_type: "Camel")
-      @opponents_player = @game.players.where.not(user: current_user).first
-      puts "Game setup complete"
-      puts "Game started"
-      puts "redirecting to game"
-
-      redirect_to game_path(@game)
-
-      puts "refreshing show page for other player"
-
-      # ActionCable.server.broadcast("game_updates #{@game.id}", { redirect: game_path(@game) })
-      GameUpdatesChannel.broadcast_to(@game, { redirect: game_path(@game) })
-    end
-  end
-
   def change_turn
     puts "Changing turn"
     @current_player = @current_users_player.id == @game.players.second.id ? @game.players.first : @game.players.second
