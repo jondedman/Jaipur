@@ -8,4 +8,6 @@ class Game < ApplicationRecord
   has_many :tokens
   has_one :market
   has_one :discard_pile
+
+  after_create_commit -> { broadcast_prepend_to "games", partial: "games/new_game", locals: { game: self }, target: "games" }
 end

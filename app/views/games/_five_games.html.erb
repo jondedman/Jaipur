@@ -1,0 +1,5 @@
+<%# <% games.each do |game| %>
+  <%= form_with(model: game) do |form| %>
+    <%= submit_tag "Join Game ##{game.id}" %>
+  <% end %>
+<% end %>

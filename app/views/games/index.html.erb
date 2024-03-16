@@ -11,15 +11,19 @@
   <%# <%= turbo_frame_tag 'new_game', src: new_game_path %> %>
 <div class="bg-white">
   <h2>Games</h2>
-  <ul>
-    <% @games.each do |game| %>
-    <%= form_with(model: game, data: { turbo: false }) do |form| %>
+  <turbo-frame id="games">
+  <%= turbo_stream_from "games" %>
+  </turbo-frame>
 
-        <%= submit_tag "Join Game ##{game.id}" %>
-      <% end %>
-    <% end %>
-  </ul>
+<%= form_with(url: join_game_games_path, method: :patch, data: { turbo: false }) do |form| %>
+  <%= form.label :game_id, "Game ID" %>
+  <%= form.text_field :game_id %>
+  <%= form.submit "Join Game" %>
+<% end %>
+
 </div>
+</div>
+
 
 
 </div>

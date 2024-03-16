@@ -6,18 +6,21 @@ class GamesController < ApplicationController
   before_action :turn_check, only: [:take_card, :take_all_camels, :take_multiple_cards, :trade_in_tokens, :hand_to_market, :multiple_cards_to_market]
 
   def index
+    general_game_message("Welcome to Jaipur. Enter the game id to start playing or create a new game.")
     # @games = Game.all
+    # I can still use the below in the index to display other games
     @games = Game.order(created_at: :desc).limit(5)
     @game = Game.new
     # 2.times { @game.players.build }
-    respond_to do |format|
+    # respond_to do |format|
 
-      format.html
-    end
+    #   format.html
+    # end
 
   end
 
   def new
+    @games = Game.order(created_at: :desc).limit(5)
     puts "Creating new game"
     @game = Game.new
     # 2.times { @game.players.build }
@@ -26,6 +29,7 @@ class GamesController < ApplicationController
   def create
     puts "in create method"
     # @game = Game.new(game_params)
+    @games = Game.order(created_at: :desc).limit(5)
     @game = Game.new
     if @game.save
       # Create a market
@@ -56,6 +60,21 @@ class GamesController < ApplicationController
       puts "current player assigned"
       puts "Game setup complete"
       # redirect_to games_path
+    #   games_html = ApplicationController.render(
+    #   partial: 'games/five_games',
+    #   locals: { games: [@game] },
+    #   formats: [:html]
+    # )
+
+    # turbo_stream = ApplicationController.render(
+    #   partial: 'games/turbo_stream_action',
+    #   locals: { games: [@game] },
+    #   formats: [:turbo_stream]
+    # )
+
+    # ActionCable.server.broadcast('games', turbo_stream)
+
+    # head :ok
       IndexUpdatesChannel.broadcast_to("index_updates", { message: "New game created" })
     else
       puts "Game creation failed"
@@ -64,8 +83,11 @@ class GamesController < ApplicationController
     end
   end
 
-  def update
-    @game = Game.find(params[:id])
+  def join_game
+    puts "in update method"
+
+    id = params[:game_id]
+    @game = Game.find(id)
     player = @game.players.find_by(user: nil)
     if player
       player.update!(user: current_user, name: current_user.email)
