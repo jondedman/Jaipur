@@ -181,7 +181,7 @@ class GamesController < ApplicationController
     @player1, @player2 = @game.players.order(:id)
     cards_left = @game.cards.where(player_id: nil, market_id: nil, discard_pile_id: nil)
     puts "Cards left: #{cards_left.count}"
-    condition1 = cards_left.count < 40
+    condition1 = cards_left.count < 5
 
     goods_count = @game.market.tokens.where(token_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"]).group(:token_type).count.values
     empty_tokens = goods_count.select { |token| token > 0 }
