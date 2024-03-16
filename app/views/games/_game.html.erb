@@ -9,17 +9,12 @@
 
 
 <div data-controller="multi-select">
-<%# <div class=" h-20 border-2 border-gray-300 shadow-md rounded-md"> %>
   <h2 class="text-white text-bold"><%= @current_player.name %>'s turn</h2>
 <%= @game.players.count == 2 ? render(partial: 'hand', locals: { hand: @current_players_hand }) : "Waiting for Second player" %>
-<%# </div> %>
 <div class="flex justify-end items-center">
   <div class="flex justify-center w-1/2">
             <div class="relative group">
               <%= button_tag "Cards to Market", type: "button", id: "togglePlayerMultiSelect", class: "h-8 w-8 sm:h-auto sm:w-auto rounded-lg p-2 sm:p-2 ml-6 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-sm sm:text-white font-medium rounded-lg my-2 sm:my-5 mx-2 transform transition duration-500 ease-in-out hover:scale-105 shadow-md hover:bg-green-700 bg-cover bg-center sm-bg-none", style: "background-image: url(#{asset_url('circle-down-regular.svg')});", data: { action: "click->multi-select#togglePlayerMultiSelect"} %>
-              <%# <div class="absolute hidden group-hover:block bg-gray-200 text-gray-700 px-2 py-1 text-sm rounded-md top-full left-1/2 transform -translate-x-1/2 -translate-y-2">
-                Select cards from hand
-              </div> %>
             </div>
           <%= button_tag "Submit", type: "button", id: "submitCardsToMarket", class: "h-8 w-8 sm:h-1/2 sm:w-auto rounded-lg p1 sm:p-2 bg-green-500 bg-opacity-80 border-2 border-gray-300 text-transparent sm:text-sm sm:text-white block font-medium rounded-lg my-2 sm:my-5 mx-2 transform transition duration-500 ease-in-out hover:scale-105 bg-contain bg-no-repeat bg-center shadow-md hover:bg-green-700 sm-bg-none", style: "display: none; background-image: url(#{asset_url('circle-check-regular.svg')});", data: {multi_select_target: "playerSubmitButton", action: "click->multi-select#submitCardsToMarket", url: multiple_cards_to_market_game_path(@game)}  %>
   </div>
