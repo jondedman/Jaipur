@@ -4,6 +4,7 @@ class GamesController < ApplicationController
   # before_action :setup_game, only: [:show, :take_card, :hand_to_discard_pile, :end_turn, :change_turn, :trade_in_tokens, :calculate_bonus_tokens, :take_multiple_cards, :reset_trade_counter, :hand_to_market, :current_player, :take_all_camels, :game_over, :multiple_cards_to_market, :refresh_market, :high_value_trade_in]
   before_action :players_details, only: [:join, :show, :trade_in_tokens, :high_value_trade_in, :take_card, :take_all_camels, :update_card_ids, :multiple_cards_to_market, :take_multiple_cards, :calculate_bonus_tokens, :turn_check]
   before_action :turn_check, only: [:take_card, :take_all_camels, :take_multiple_cards, :trade_in_tokens, :hand_to_market, :multiple_cards_to_market]
+  before_action :game_over_check, only: [:take_card, :take_all_camels, :take_multiple_cards, :trade_in_tokens, :hand_to_market, :multiple_cards_to_market]
 
   def index
     general_game_message("Welcome to Jaipur. Enter the game id to start playing or create a new game.")
@@ -180,7 +181,7 @@ class GamesController < ApplicationController
     @player1, @player2 = @game.players.order(:id)
     cards_left = @game.cards.where(player_id: nil, market_id: nil, discard_pile_id: nil)
     puts "Cards left: #{cards_left.count}"
-    condition1 = cards_left.count < 5
+    condition1 = cards_left.count < 40
 
     goods_count = @game.market.tokens.where(token_type: ["Leather", "Spice", "Cloth", "Silver", "Gold", "Diamond"]).group(:token_type).count.values
     empty_tokens = goods_count.select { |token| token > 0 }
@@ -718,6 +719,12 @@ end
 def turn_check
   if @current_player.id != @current_users_player.id
     render_game_and_message("It's not your turn")
+    return
+  end
+end
+
+def game_over_check
+  if game_over()
     return
   end
 end
