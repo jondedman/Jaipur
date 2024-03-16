@@ -14,6 +14,7 @@ class GamesController < ApplicationController
 
       format.html
     end
+
   end
 
   def new
@@ -54,7 +55,8 @@ class GamesController < ApplicationController
       @game.update!(current_player_id: @game.players.first.id)
       puts "current player assigned"
       puts "Game setup complete"
-      redirect_to games_path
+      # redirect_to games_path
+      IndexUpdatesChannel.broadcast_to("index_updates", { message: "New game created" })
     else
       puts "Game creation failed"
       @game = Game.new
