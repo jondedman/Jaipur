@@ -4,15 +4,16 @@
     <div class="flex justify-center mt-6">
     <%= button_to 'New Game', games_path, method: :post, class: 'p-4 rounded-md bg-green-400 mx-4 font-bold text-gray-700 hover:bg-green-500 active:transform transition duration-500 ease-in-out active:scale-105 shadow-md active:bg-green-700' %>
     <%# <%= turbo_frame_tag 'new_game', src: new_game_path %>
-  <div class="bg-white">
-    <h2>Games</h2>
+  <div class="bg-white bg-opacity-50 rounded-lg p-2">
     <turbo-frame id="games">
       <%= turbo_stream_from "games" %>
     </turbo-frame>
   <%= form_with(url: join_game_games_path, method: :patch, data: { turbo: false }) do |form| %>
-    <%= form.label :game_id, "Game ID" %>
-    <%= form.text_field :game_id %>
-    <%= form.submit "Join Game" %>
+    <%= form.label :game_id, "Game ID", class: "text-gray-700 font-poppins font-bold" %>
+    <div >
+    <%= form.text_field :game_id, placeholder: "Enter Game ID...", class: "border-2 border-gray-500 p-1 rounded-md" %>
+    </div>
+    <%= form.submit "Join Game", class: "my-2 p-2 rounded-md bg-green-400 text-gray-700 hover:bg-green-500 active:transform transition duration-500 ease-in-out active:scale-105 shadow-md active:bg-green-700 font-bold" %>
   <% end %>
   </div>
 </div>
