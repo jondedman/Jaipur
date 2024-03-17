@@ -19,6 +19,10 @@ class GamesController < ApplicationController
   end
 
   def create
+    if current_user == nil
+      general_game_message("You must be logged in to create a game")
+      return
+    end
     puts "in create method"
     @games = Game.order(created_at: :desc).limit(5)
     @game = Game.new
@@ -56,7 +60,11 @@ class GamesController < ApplicationController
 
   def join_game
     puts "in update method"
-
+    if @game == nil
+      redirect_to action: :index
+      flash[:notice] = "Game not found"
+      return
+    end
     id = params[:game_id]
     @game = Game.find(id)
     player = @game.players.find_by(user: nil)

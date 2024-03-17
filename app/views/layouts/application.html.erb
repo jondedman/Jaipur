@@ -14,7 +14,7 @@
   <body style="background-image: url(<%= asset_path 'background.jpg' %>)" class="min-h-screen bg-fixed sm:bg-cover bg-center bg-no-repeat">
        <%= render "shared/navbar" %>
   <%# <p class="notice"><%= notice %></p>
-       <%# <p class="alert"><%= alert %></p>
+       <%# <p class="alert bg-white font-bold"><%= alert %></p>
     <div>
     <turbo-frame id="game_updates">
       <% if flash[:game_notice].present? %>
