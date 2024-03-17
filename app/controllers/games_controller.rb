@@ -62,7 +62,6 @@ class GamesController < ApplicationController
     puts "in update method"
     if @game == nil
       redirect_to action: :index
-      flash[:notice] = "Game not found"
       return
     end
     id = params[:game_id]
