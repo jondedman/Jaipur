@@ -12,9 +12,9 @@
   </head>
 
   <body style="background-image: url(<%= asset_path 'background.jpg' %>)" class="min-h-screen bg-fixed sm:bg-cover bg-center bg-no-repeat">
-  <p class="notice"><%= notice %></p>
-       <p class="alert"><%= alert %></p>
        <%= render "shared/navbar" %>
+  <%# <p class="notice"><%= notice %></p>
+       <%# <p class="alert"><%= alert %></p>
     <div>
     <turbo-frame id="game_updates">
       <% if flash[:game_notice].present? %>
@@ -22,9 +22,9 @@
       <% end %>
     </turbo-frame>
       <%= yield %>
-      <% if current_user.present? %>
-      <h2 class="bg-blue-500 text-white">Hi <%= current_user.email %></h2>
-      <% end %>
+      <%# <% if current_user.present? %>
+      <%# <h2 class="bg-blue-500 text-white">Hi <%= current_user.email %></h2>
+      <%# <% end %>
       </div>
   </body>
 </html>

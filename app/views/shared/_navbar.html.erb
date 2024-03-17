@@ -16,6 +16,7 @@
         <%# primary nav on desktop %>
         <div class="hidden md:flex ml-3 items-center space-x-3">
           <%# <a class="py-4 px-2 text-gray-700 hover:text-gray-900" href="#">Features</a> %>
+          <p class="notice py-4 px-2 text-gray-700 hover:text-gray-900"><%= notice %></p>
                 <% if current_user.present? %>
       <h2 class="py-4 px-2 text-gray-700">Hi <%= current_user.email %></h2>
       <% end %>
