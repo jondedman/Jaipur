@@ -60,10 +60,10 @@ class GamesController < ApplicationController
 
   def join_game
     puts "in update method"
-    if @game == nil
-      redirect_to action: :index
-      return
-    end
+    # if @game == nil
+    #   redirect_to action: :index
+    #   return
+    # end
     id = params[:game_id]
     @game = Game.find(id)
     player = @game.players.find_by(user: nil)
