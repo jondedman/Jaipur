@@ -6,7 +6,8 @@ class GamesController < ApplicationController
   before_action :game_over_check, only: [:take_card, :take_all_camels, :take_multiple_cards, :trade_in_tokens, :hand_to_market, :multiple_cards_to_market]
 
   def index
-    general_game_message("Welcome to Jaipur. Enter the game id to start playing or create a new game.")
+    # I need to render this message as part of the link back to home page instead of the index. I need to overwrite the ingame messages with the general game message.
+    # general_game_message("Welcome to Jaipur. Enter the game id to start playing or create a new game.")
     # I can still use the below in the index to display other games
     @games = Game.order(created_at: :desc).limit(5)
     @game = Game.new
@@ -51,6 +52,10 @@ class GamesController < ApplicationController
       puts "current player assigned"
       puts "Game setup complete"
       IndexUpdatesChannel.broadcast_to("index_updates", { message: "New game created" })
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to games_path }
+      end
     else
       puts "Game creation failed"
       @game = Game.new
