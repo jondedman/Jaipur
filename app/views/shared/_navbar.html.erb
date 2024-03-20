@@ -20,11 +20,11 @@
           </a>
         </div>
         <%# primary nav on desktop %>
-        <div class="hidden md:flex ml-3 items-center space-x-3">
+        <div class="flex ml-3 items-center space-x-3">
           <%# <p class="alert py-4 px-2 text-gray-700 hover:text-gray-900"><%= alert %></p>
-          <p class="notice py-4 px-2 text-gray-700 hover:text-gray-900"><%= notice %></p>
+          <p class=" text-xs sm:text-sm notice py-4 px-2 text-gray-700 hover:text-gray-900"><%= notice %></p>
                 <% if current_user.present? %>
-      <h2 class="py-4 px-2 text-gray-700">Hi <%= current_user.email %></h2>
+      <h2 class="text-xs sm:text-sm md:text-md py-4 px-2 text-gray-700"><%= current_user.email %></h2>
       <% end %>
         </div>
       </div>
