@@ -52,6 +52,7 @@ class GamesController < ApplicationController
       puts "current player assigned"
       puts "Game setup complete"
       IndexUpdatesChannel.broadcast_to("index_updates", { message: "New game created" })
+      # GameUpdatesChannel.broadcast_to(@game, { message: "New game created" })
       respond_to do |format|
         format.turbo_stream
         format.html { redirect_to games_path }

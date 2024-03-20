@@ -28,7 +28,6 @@
           <%= link_to "Log In", new_user_session_path, class: "py-5 px-3" %>
           <%= link_to "Sign Up", new_user_registration_path, class: "py-5 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300" %>
           <%= button_to "Log Out", destroy_user_session_path, method: :delete, class: "py-5 px-3", data: { turbo: false } %>
-          <%# <a class="py-2 px-3 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300" href="./users/sign_up">Sign Up</a> %>
         </div>
         <%# mobile button goes here %>
         <div class="md:hidden flex items-center">
@@ -43,9 +42,10 @@
     </div>
   </div>
   <%# mobile menu %>
-    <div class="mobile-menu hidden md:hidden">
-      <a href="#" class="block py-2 px-4 text-sm hover:bg-gray-200 active:bg-gray-200">Features</a>
-      <a href="#" class="block py-2 px-4 text-sm hover:bg-gray-200 active:bg-gray-200">Pricing</a>
+    <div class="mobile-menu hidden md:hidden flex justify-left items-center">
+          <%= link_to "Sign Up", new_user_registration_path, class: "mx-4 py-2 px-2 bg-yellow-400 hover:bg-yellow-300 text-yellow-900 hover:text-yellow-800 rounded transition duration-300" %>
+          <%= link_to "Log In", new_user_session_path, class: "p-2" %>
+          <%= button_to "Log Out", destroy_user_session_path, method: :delete, class: "py-5 px-3", data: { turbo: false } %>
   </div>
 
 </nav>
