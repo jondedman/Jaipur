@@ -333,7 +333,6 @@ def high_value_trade_in(token, matching_cards, matching_tokens = [])
     matching_market_tokens.each do |token|
       token.update!(player_id: @current_player.id, market_id: nil)
     end
-    raise "in high value trade in"
   end_turn()
   else
     matching_cards.each do |card|
