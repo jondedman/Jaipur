@@ -11,4 +11,5 @@ Rails.application.config.assets.version = "1.0"
 # folder are already added.
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
 Rails.application.config.assets.precompile += %w( king_jon.jpg )
-Rails.application.config.assets.compile = false
+# why does the line below, when uncommented, prevent my tailwind from loading?
+# Rails.application.config.assets.compile = false
