@@ -8,5 +8,8 @@ production:
   adapter: redis
   url: <%= ENV.fetch("REDIS_URL") %>
   channel_prefix: Jaipur_production
+  ssl: true
   ssl_params:
-    verify_mode: <%= OpenSSL::SSL::VERIFY_NONE %>
+    verify_mode: OpenSSL::SSL::VERIFY_PEER
+    # Optionally, you can provide the ca_file option if you need to specify a custom certificate authority file:
+    # ca_file: '/path/to/ca.crt'
