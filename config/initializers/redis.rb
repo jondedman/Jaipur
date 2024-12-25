@@ -9,8 +9,7 @@ begin
     url: redis_url,
     ssl: true,
     ssl_params: {
-      verify_mode: OpenSSL::SSL::VERIFY_PEER,
-      ca_file: Certifi.where  # Use the certifi CA bundle
+      verify_mode: OpenSSL::SSL::VERIFY_NONE  # Skip SSL certificate verification
     }
   )
   puts "Redis initialized successfully"
