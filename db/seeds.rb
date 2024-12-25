@@ -17,11 +17,11 @@ Market.destroy_all
 puts "Destroying all discard piles"
 DiscardPile.destroy_all
 
-puts "Destroying all games"
-Game.destroy_all
+
   puts "Destroying all players"
   Player.destroy_all
-
+  puts "Destroying all games"
+  Game.destroy_all
 
 
 
