@@ -9,7 +9,7 @@ begin
   puts "Initializing Redis with URL: #{redis_url}"
   $redis = Redis.new(
     host: uri.host,
-    port: uri.port,
+    port: uri.port.to_i,
     password: uri.password,
     ssl: uri.scheme == 'rediss',
     ssl_params: {
