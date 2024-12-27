@@ -1,15 +1,28 @@
-development:
-  adapter: async
+# filepath: /Users/jondedman/code/twenty_four/Jaipur/config/initializers/redis.rb
+require 'redis'
+require 'uri'
+require 'certifi'
 
-test:
-  adapter: test
+begin
+  redis_url = ENV['REDIS_URL']
+  uri = URI.parse(redis_url)
+  puts "Initializing Redis with URL: #{redis_url}"
+  puts "Parsed URI: #{uri.inspect}"
+  puts "Host: #{uri.host}, Port: #{uri.port}, Password: #{uri.password}, Scheme: #{uri.scheme}"
 
-production:
-  adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") %>
-  channel_prefix: Jaipur_production
-  ssl: true
-  ssl_params:
-    verify_mode: OpenSSL::SSL::VERIFY_PEER
-    # Optionally, you can provide the ca_file option if you need to specify a custom certificate authority file:
-    # ca_file: '/path/to/ca.crt'
+  $redis = Redis.new(
+    host: uri.host,
+    port: uri.port.to_i,
+    password: uri.password,
+    ssl: uri.scheme == 'rediss',
+    ssl_params: {
+      verify_mode: OpenSSL::SSL::VERIFY_PEER,  # Verify SSL certificate
+      ca_file: Certifi.where  # Use the certifi CA bundle
+    }
+  )
+  puts "Redis initialized successfully"
+rescue => e
+  puts "Error initializing Redis: #{e.message}"
+  puts e.backtrace.join("\n")
+  $redis = nil
+end
