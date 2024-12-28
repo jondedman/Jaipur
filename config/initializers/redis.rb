@@ -7,9 +7,12 @@ begin
   redis_url = ENV['REDIS_URL']
   uri = URI.parse(redis_url)
   puts "Initializing Redis with URL: #{redis_url}"
+  puts "Parsed URI: #{uri.inspect}"
+  puts "Host: #{uri.host}, Port: #{uri.port}, Password: #{uri.password}, Scheme: #{uri.scheme}"
+
   $redis = Redis.new(
     host: uri.host,
-    port: uri.port.to_i,
+    port: uri.port.to_i,  # Ensure port is an integer
     password: uri.password,
     ssl: uri.scheme == 'rediss',
     ssl_params: {

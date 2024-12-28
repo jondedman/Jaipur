@@ -17,12 +17,12 @@ Market.destroy_all
 puts "Destroying all discard piles"
 DiscardPile.destroy_all
 
-
+ActiveRecord::Base.connection.disable_referential_integrity do
   puts "Destroying all players"
   Player.destroy_all
   puts "Destroying all games"
   Game.destroy_all
 
-
+end
 
 puts "Seeding complete"
