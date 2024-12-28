@@ -12,7 +12,7 @@ begin
 
   $redis = Redis.new(
     host: uri.host,
-    port: uri.port.to_i,  # Ensure port is an integer
+    port: uri.port,  # Ensure port is an integer
     password: uri.password,
     ssl: uri.scheme == 'rediss',
     ssl_params: {
