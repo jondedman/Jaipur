@@ -9,6 +9,12 @@ begin
   puts "Initializing Redis with URL: #{redis_url}"
   puts "Parsed URI: #{uri.inspect}"
   puts "Host: #{uri.host}, Port: #{uri.port}, Password: #{uri.password}, Scheme: #{uri.scheme}"
+  puts "redis_url is a #{redis_url.class}"
+  puts "uri is a #{uri.class}"
+  puts "host is a #{uri.host.class}"
+  puts "port is a #{uri.port.class}"
+  puts "password is a #{uri.password.class}"
+  puts "scheme is a #{uri.scheme.class}"
 
   $redis = Redis.new(
     host: uri.host,
