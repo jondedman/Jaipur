@@ -44,8 +44,7 @@ Rails.application.configure do
   # config.action_cable.mount_path = nil
   # uncommented for heroku
   config.action_cable.url = ENV['REDIS_URL']
-  config.action_cable.allowed_request_origins = [ 'https://jaipur-987f936505cd.herokuapp.com' ]
-
+  config.action_cable.allowed_request_origins = [ 'https://jaipur-d34e54923434.herokuapp.com' ]
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
 
