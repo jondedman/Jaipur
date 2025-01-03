@@ -12,4 +12,4 @@ production:
   ssl_params:
     verify_mode: OpenSSL::SSL::VERIFY_PEER
     # Optionally, you can provide the ca_file option if you need to specify a custom certificate authority file:
-    ca_file: './ca_cert.pem'
+    ca_file: <%= Certifi.where %>
