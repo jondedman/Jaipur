@@ -2,6 +2,10 @@ require 'redis'
 require 'uri'
 require 'certifi'
 
+# Write the certifi CA bundle to a custom CA file
+ca_file_path = Rails.root.join('config', 'ca_cert.pem')
+File.write(ca_file_path, File.read(Certifi.where))
+
 begin
   redis_url = ENV['REDIS_URL'] || 'redis://localhost:6379' # Fallback for local development
   uri = URI.parse(redis_url)
@@ -9,6 +13,7 @@ begin
   puts "[Redis Initializer] Initializing Redis with URL: #{redis_url}"
   puts "[Redis Initializer] Parsed URI: #{uri.inspect}"
   puts "[Redis Initializer] Host: #{uri.host}, Port: #{uri.port}, Password: #{uri.password}, Scheme: #{uri.scheme}"
+
 
   # Explicitly convert port to integer and validate other values
   host = uri.host
@@ -23,7 +28,7 @@ begin
     ssl: ssl_enabled,
     ssl_params: {
       verify_mode: OpenSSL::SSL::VERIFY_PEER,  # Strict SSL verification
-      ca_file: Certifi.where # Use the certifi CA bundle
+      ca_file: ca_file_path.to_s
     }
   )
 
