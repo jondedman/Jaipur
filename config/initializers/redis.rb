@@ -10,10 +10,9 @@ begin
   redis_url = ENV['REDIS_URL'] || 'redis://localhost:6379' # Fallback for local development
   uri = URI.parse(redis_url)
 
-  puts "[Redis Initializer] Initializing Redis with URL: #{redis_url}"
-  puts "[Redis Initializer] Parsed URI: #{uri.inspect}"
-  puts "[Redis Initializer] Host: #{uri.host}, Port: #{uri.port}, Password: #{uri.password}, Scheme: #{uri.scheme}"
-
+  Rails.logger.info "[Redis Initializer] Initializing Redis with URL: #{redis_url}"
+  Rails.logger.info "[Redis Initializer] Parsed URI: #{uri.inspect}"
+  Rails.logger.info "[Redis Initializer] Host: #{uri.host}, Port: #{uri.port}, Password: #{uri.password}, Scheme: #{uri.scheme}"
 
   # Explicitly convert port to integer and validate other values
   host = uri.host
@@ -32,14 +31,14 @@ begin
     }
   )
 
-  puts "[Redis Initializer] Redis initialized successfully at #{host}:#{port} (SSL: #{ssl_enabled})"
+  Rails.logger.info "[Redis Initializer] Redis initialized successfully at #{host}:#{port} (SSL: #{ssl_enabled})"
 rescue URI::InvalidURIError => uri_error
-  puts "[Redis Initializer] Invalid REDIS_URL format: #{redis_url}"
-  puts "Error: #{uri_error.message}"
-  puts uri_error.backtrace.join("\n")
+  Rails.logger.error "[Redis Initializer] Invalid REDIS_URL format: #{redis_url}"
+  Rails.logger.error "Error: #{uri_error.message}"
+  Rails.logger.error uri_error.backtrace.join("\n")
   $redis = nil
 rescue => e
-  puts "[Redis Initializer] Error initializing Redis: #{e.message}"
-  puts e.backtrace.join("\n")
+  Rails.logger.error "[Redis Initializer] Error initializing Redis: #{e.message}"
+  Rails.logger.error e.backtrace.join("\n")
   $redis = nil
 end
