@@ -22,7 +22,7 @@ begin
 
   $redis = Redis.new(
     host: host,
-    port: port,  # Ensures the port is properly cast
+    port: 18200  # Ensures the port is properly cast
     password: password,
     ssl: ssl_enabled,
     ssl_params: {
