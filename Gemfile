@@ -32,7 +32,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 
 # Use Redis adapter to run Action Cable in production
-gem "redis", "~> 4.8.1"
+gem "redis", "~> 5.2.0"
 gem "redis-actionpack" # Added for better integration with Rails
 gem "redis-rails", "~> 5.0" # Added for Rails-specific helpers
 
