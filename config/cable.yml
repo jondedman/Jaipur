@@ -1,3 +1,19 @@
+# development:
+#   adapter: async
+
+# test:
+#   adapter: test
+
+# production:
+#   adapter: redis
+#   url: <%= ENV.fetch("REDIS_URL") %>
+#   channel_prefix: Jaipur_production
+#   ssl: true
+#   ssl_params:
+#     verify_mode: OpenSSL::SSL::VERIFY_PEER
+#     # Optionally, you can provide the ca_file option if you need to specify a custom certificate authority file:
+#     ca_file: <%= Certifi.where %>
+# filepath: /Users/jondedman/code/twenty_four/Jaipur/config/cable.yml
 development:
   adapter: async
 
@@ -8,8 +24,5 @@ production:
   adapter: redis
   url: <%= ENV.fetch("REDIS_URL") %>
   channel_prefix: Jaipur_production
-  ssl: true
   ssl_params:
-    verify_mode: OpenSSL::SSL::VERIFY_PEER
-    # Optionally, you can provide the ca_file option if you need to specify a custom certificate authority file:
-    ca_file: <%= Certifi.where %>
+    verify_mode: OpenSSL::SSL::VERIFY_NONE
