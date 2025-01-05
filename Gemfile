@@ -33,8 +33,8 @@ gem "jbuilder"
 
 # Use Redis adapter to run Action Cable in production
 gem "redis"
-gem "redis-actionpack" # Added for better integration with Rails
-gem "redis-rails" # Added for Rails-specific helpers
+# gem "redis-actionpack" # Added for better integration with Rails
+# gem "redis-rails" # Added for Rails-specific helpers
 
 gem "certifi"
 
