@@ -10,3 +10,4 @@ production:
   channel_prefix: Jaipur_production
   ssl_params:
     verify_mode: OpenSSL::SSL::VERIFY_NONE
+  database: 0
