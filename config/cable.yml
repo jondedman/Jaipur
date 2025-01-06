@@ -6,7 +6,7 @@ test:
 
 production:
   adapter: redis
-  url: "rediss://:pc78a93b28dde6fa406a1999f04a33a2bf6c5b79f47fd72250d1c5607f95289e3@ec2-54-72-65-59.eu-west-1.compute.amazonaws.com:18200/0"
+  url: <%= ENV.fetch("REDIS_URL") %>
   channel_prefix: Jaipur_production
   ssl_params:
     verify_mode: OpenSSL::SSL::VERIFY_NONE
