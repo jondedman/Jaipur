@@ -10,4 +10,4 @@ production:
   channel_prefix: Jaipur_production
   ssl_params:
     verify_mode: OpenSSL::SSL::VERIFY_NONE
-    ca_file: <%= Certifi.where.find_file('cacert.pem') %>
+    ca_file: <%= Certifi.where %>
