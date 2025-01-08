@@ -9,5 +9,5 @@ production:
   url: <%= ENV.fetch("REDIS_URL") %>
   channel_prefix: Jaipur_production
   ssl_params:
-    verify_mode: OpenSSL::SSL::VERIFY_PEER
+    verify_mode: OpenSSL::SSL::VERIFY_NONE
     ca_file: <%= ENV['REDIS_CA_FILE_PATH'] %>
